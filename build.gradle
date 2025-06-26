@@ -1,0 +1,78 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'project'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+def querydslVersion = "5.0.0" // ✅ 버전 직접 명시
+
+dependencies {
+	// 기본
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Querydsl
+	implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+	annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	// DB, 로그 확인용
+	runtimeOnly 'com.h2database:h2'
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// 테스트
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// Q클래스 생성 위치 연결 (IDE 인식용)
+def generated = "$buildDir/generated/sources/annotationProcessor/java/main"
+
+tasks.withType(JavaCompile).configureEach {
+	options.generatedSourceOutputDirectory = file(generated)
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir generated
+		}
+	}
+}
+
+// Clean 시 generated 삭제
+clean {
+	delete file('src/main/generated')
+}
