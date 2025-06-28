@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 주문 목록</title>
+</head>
+<body>
+    <h1>내 주문 목록</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>주문번호</th>
+            <th>책 제목</th>
+            <th>주문금액</th>
+            <th>수량</th>
+            <th>상태</th>
+            <th>주문일시</th>
+            <th>주문 취소</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderId}">주문번호</td>
+                <td th:text="${order.bookTitle}">책 제목</td>
+                <td th:text="${order.orderPrice}">주문금액</td>
+                <td th:text="${order.count}">수량</td>
+                <td th:text="${order.status}">상태</td>
+                <td th:text="${#temporals.format(order.orderDate,'yyyy-MM-dd HH:mm')}">주문일시</td>
+                <td>
+                    <form th:action="@{/orders/{orderId}/cancel(orderId=${order.orderId})}" method="post" th:if="${order.status.name() == 'ORDER'}">
+                        <button type="submit">주문 취소</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <a th:href="@{/books}">책 목록으로 돌아가기</a>
+    </div>
+</body>
+</html>

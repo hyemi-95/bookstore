@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 생성</title>
+</head>
+<body>
+    <h1>책 주문하기</h1>
+    <form th:action="@{/orders/new}" method="post">
+        <input type="hidden" name="bookId" th:value="${book.id}">
+
+        <div>
+            <label>책 제목 : </label>
+            <span th:text="${book.title}">책 제목</span>
+        </div>
+        <div>
+            <label>저자 : </label>
+            <span th:text="${book.author}">저자</span>
+        </div>
+        <div>
+            <label>가격 : </label>
+            <span th:text="${book.price}">가격</span>
+        </div>
+        <div>
+            <label>주문 수량 : </label>
+            <input type="number" name="count" min="1" th:attr="max=${book.stockQuantity}" value="1" required>
+        </div>
+        <div>
+            <button type="submit">주문하기</button>
+        </div>
+    </form>
+    <div>
+        <a th:href="@{/books}">책 목록으로 돌아가기</a>
+    </div>
+
+</body>
+</html>

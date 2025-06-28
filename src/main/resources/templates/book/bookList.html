@@ -36,12 +36,14 @@
         </thead>
         <tbody>
             <tr th:each="book : ${books}">
-                <th th:text="${book.title}">제목</th>
-                <th th:text="${book.author}">저자</th>
-                <th th:text="${book.price}">가격</th>
-                <th th:text="${book.stockQuantity}">재고</th>
-                <th th:text="${book.isbn}">ISBN</th>
-                <th th:text="${book.isUsed} ? '중고': '신품'">상태</th>
+                <td>
+                    <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}">제목</a>
+                </td>
+                <td th:text="${book.author}">저자</td>
+                <td th:text="${book.price}">가격</td>
+                <td th:text="${book.stockQuantity}">재고</td>
+                <td th:text="${book.isbn}">ISBN</td>
+                <td th:text="${book.isUsed} ? '중고': '신품'">상태</td>
 
                 <!--수정/삭제는 관리자만 가능-->
                 <td sec:authorize="hasRole('ADMIN')">

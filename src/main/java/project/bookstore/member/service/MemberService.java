@@ -9,6 +9,8 @@ import project.bookstore.member.entity.Member;
 import project.bookstore.member.entity.Role;
 import project.bookstore.member.repository.MemberRepository;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -42,4 +44,8 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+
+    public Member findByEmail(String name) {
+       return memberRepository.findByEmail(name).orElseThrow(()->new IllegalArgumentException("회원을 찾을 수 없습니다."));
+    }
 }

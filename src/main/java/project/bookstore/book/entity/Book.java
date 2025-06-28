@@ -4,12 +4,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book {
 
     @Id @GeneratedValue
@@ -46,5 +47,17 @@ public class Book {
         this.stockQuantity = stockQuantity;
         this.isUsed = isUsed;
         this.isbn = isbn;
+    }
+
+    public void removeStock(int quantity) { //재고 차감
+        int restStork = this.stockQuantity - quantity;
+        if (restStork < 0) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.stockQuantity = restStork;
+    }
+
+    public void addStork(int quantity) {// 재고 복구
+        this.stockQuantity += quantity;
     }
 }
