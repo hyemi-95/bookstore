@@ -33,6 +33,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// Thymeleaf 템플릿에서 Spring Security 권한 체크
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
 	// Querydsl
 	implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
 	annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"

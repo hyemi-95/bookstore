@@ -1,0 +1,50 @@
+package project.bookstore.book.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class Book {
+
+    @Id @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;//제목
+
+    @Column(nullable = false)
+    private  String author;//저자
+
+    private Integer price; //가격
+
+    private Integer stockQuantity; //재고
+
+    private String isbn; //국제 표준 도서번호(13자리의 숫자 : 978-89-5090-173-0)
+
+    @Column(nullable = false)
+    private Boolean isUsed = false; //기본값은 false
+
+    public Book(String title, String author, int price, int stockQuantity, Boolean isUsed, String isbn) {
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.isUsed = isUsed;
+        this.isbn = isbn;
+    }
+
+    public void update(String title, String author, int price, int stockQuantity, Boolean isUsed,  String isbn) {
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.isUsed = isUsed;
+        this.isbn = isbn;
+    }
+}

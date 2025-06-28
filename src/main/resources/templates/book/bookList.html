@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <!--Spring Security 권한 체크-->
+<head>
+    <meta charset="UTF-8">
+    <title>책 목록</title>
+</head>
+<body>
+    <h1>책 목록</h1>
+
+    <!--검색 폼-->
+    <form th:action="@{/books}" method="get">
+        <input type="text" name="keyword" placeholder="제목검색" th:value="${condition.keyword}">
+        <label>
+            <input type="checkbox" name="isUsed" value="true" th:checked="${condition.isUsed} == true">
+            중고만 보기
+        </label>
+        <button type="submit"> 검색</button>
+    </form>
+
+    <!--새 책 등록은 관리자만 가능-->
+    <div sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/books/new}">+ 새 책 등록하기</a>
+    </div>
+
+    <table border ="1">
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>저자</th>
+                <th>가격</th>
+                <th>재고</th>
+                <th>ISBN</th>
+                <th>중고 여부</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="book : ${books}">
+                <th th:text="${book.title}">제목</th>
+                <th th:text="${book.author}">저자</th>
+                <th th:text="${book.price}">가격</th>
+                <th th:text="${book.stockQuantity}">재고</th>
+                <th th:text="${book.isbn}">ISBN</th>
+                <th th:text="${book.isUsed} ? '중고': '신품'">상태</th>
+
+                <!--수정/삭제는 관리자만 가능-->
+                <td sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{'/books/edit/' + ${book.id}}">수정</a>
+                    <form th:action="@{'/books/delete/'+ ${book.id}}" method="post" style="display:inline">
+                        <button type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!--페이징-->
+    <div>
+        <!--이전페이지 (첫페이지가 아닐 경우만) -->
+        <span th:if="${page.hasPrevious()}">
+            <a th:href="@{/books(page=${page.number -1}, keyword=${condition.keyword}, isUsed=${condition.isUsed})}">이전</a>
+        </span>
+
+        <!--현재 페이지 번호 / 전체 페이지 수-->
+        <span th:text="${page.number + 1}">1</span> / <span th:text="${page.totalPages}">1</span>
+
+        <!--다음 페이지 (마지막페이지가 아닐 경우) -->
+        <span th:if="${page.hasNext()}">
+            <a th:href="@{/books(page=${page.number +1}, keyword=${condition.keyword}, isUsed=${condition.isUsed})}">다음</a>
+        </span>
+    </div>
+</body>
+</html>

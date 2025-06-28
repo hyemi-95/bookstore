@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>책 등록</title>
+</head>
+<body>
+    <h1>책 등록</h1>
+    <form th:action="@{/books/new}" th:object="${bookForm}" method="post">
+        <div>
+            <label>제목:</label>
+            <input type="text" th:field="*{title}" />
+            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+
+        <div>
+            <label>저자:</label>
+            <input type="text" th:field="*{author}" />
+            <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+        </div>
+
+        <div>
+            <label>가격:</label>
+            <input type="number" th:field="*{price}" placeholder="가격을 입력하세요." />
+            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+        </div>
+
+        <div>
+            <label>재고 수량:</label>
+            <input type="number" th:field="*{stockQuantity}" placeholder="재고 수량을 입력하세요."/>
+            <div th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}"></div>
+        </div>
+
+        <div>
+            <label>중고 여부:</label>
+            <input type="checkbox" th:field="*{isUsed}"/>
+        </div>
+
+        <div>
+            <label>ISBN:</label>
+            <input type="text" th:field="*{isbn}" />
+        </div>
+
+        <button type="submit">등록</button>
+    </form>
+</body>
+</html>
