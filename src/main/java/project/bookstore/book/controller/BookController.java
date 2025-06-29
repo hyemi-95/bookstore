@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import project.bookstore.book.dto.BookDetailDto;
 import project.bookstore.book.dto.BookForm;
+import project.bookstore.book.dto.BookListDto;
 import project.bookstore.book.dto.BookSearchCondition;
 import project.bookstore.book.entity.Book;
 import project.bookstore.book.service.BookService;
@@ -64,17 +66,26 @@ public class BookController {
     @GetMapping("/books")
     public String bookList(@ModelAttribute("condition") BookSearchCondition condition, @PageableDefault(size = 5) Pageable pageable, Model model) {
 
-        Page<Book> books = bookService.searchBooks(condition, pageable);
+        Page<BookListDto> books = bookService.searchBooks(condition, pageable);
+
         model.addAttribute("books", books.getContent()); //현재 페이지의 책 리스트
         model.addAttribute("page", books); //전체 페이징 정보
 
         return "book/bookList";
     }
 
+    /**
+     * 상세페이지
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("/books/{id}")
     public String detail(@PathVariable Long id, Model model) {
         Book book = bookService.findById(id);
-        model.addAttribute("book",book);
+        BookDetailDto bookDetailDto = new BookDetailDto(book);
+
+        model.addAttribute("book",bookDetailDto);
         return "book/bookDetail";
     }
 
@@ -102,6 +113,7 @@ public class BookController {
         return "book/bookEditForm";
     }
 
+    //수정 - 업데이트
     @PostMapping("/books/edit/{id}")
     public String update(@PathVariable Long id, @Valid @ModelAttribute("bookForm") BookForm form, BindingResult result) {
         if (result.hasErrors()) {
@@ -112,6 +124,7 @@ public class BookController {
         return "redirect:/books";
     }
 
+    //삭제
     @PostMapping("/books/delete/{id}")
     public String delete(@PathVariable Long id){
         bookService.delete(id);

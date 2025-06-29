@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.book.Repository.BookRepository;
 import project.bookstore.book.dto.BookForm;
+import project.bookstore.book.dto.BookListDto;
 import project.bookstore.book.dto.BookSearchCondition;
 import project.bookstore.book.entity.Book;
 
@@ -65,7 +66,8 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    public Page<Book> searchBooks(BookSearchCondition condition, Pageable pageable) {
-        return bookRepository.search(condition, pageable);
+    public Page<BookListDto> searchBooks(BookSearchCondition condition, Pageable pageable) {
+        Page<Book> books = bookRepository.search(condition, pageable);
+        return books.map(BookListDto::new);
     }
 }

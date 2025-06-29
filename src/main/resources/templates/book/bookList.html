@@ -29,8 +29,6 @@
                 <th>제목</th>
                 <th>저자</th>
                 <th>가격</th>
-                <th>재고</th>
-                <th>ISBN</th>
                 <th>중고 여부</th>
             </tr>
         </thead>
@@ -41,8 +39,6 @@
                 </td>
                 <td th:text="${book.author}">저자</td>
                 <td th:text="${book.price}">가격</td>
-                <td th:text="${book.stockQuantity}">재고</td>
-                <td th:text="${book.isbn}">ISBN</td>
                 <td th:text="${book.isUsed} ? '중고': '신품'">상태</td>
 
                 <!--수정/삭제는 관리자만 가능-->
