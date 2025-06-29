@@ -1,0 +1,18 @@
+package project.bookstore.cart.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import project.bookstore.book.entity.Book;
+import project.bookstore.cart.entity.Cart;
+import project.bookstore.cart.entity.CartItem;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+   //cart 내 모든 item조회
+    List<CartItem> findByCart(Cart cart);
+    
+    //cart + book 으로 이미 담긴 item 찾기
+    Optional<CartItem> findByCartAndBook(Cart cart, Book book);
+
+}

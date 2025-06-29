@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.bookstore.deilvery.entity.Delivery;
+import project.bookstore.global.config.baseEntity;
 import project.bookstore.member.entity.Member;
 
 import java.time.LocalDateTime;
@@ -14,7 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders")
-public class Order {
+public class Order extends baseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -25,6 +27,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();//주문 상품들
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
+
     private LocalDateTime orderDate;//주문시간
 
     @Enumerated(EnumType.STRING)
@@ -34,6 +40,12 @@ public class Order {
     public void addOrderItem(OrderItem item) {
         orderItems.add(item);
         item.addOrder(this);
+    }
+
+    public void addDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.addDelivery(this);
+
     }
 
     //생성 메서드

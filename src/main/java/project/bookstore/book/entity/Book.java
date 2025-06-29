@@ -7,11 +7,12 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.bookstore.global.config.baseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Book {
+public class Book extends baseEntity {
 
     @Id @GeneratedValue
     private Long id;

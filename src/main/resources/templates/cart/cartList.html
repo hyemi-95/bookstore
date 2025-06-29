@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>장바구니</title>
+</head>
+<body>
+    <h1>장바구니 목록</h1>
+    <form th:action="@{/orders/form-cart}" method="post" id="cartOrderForm">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>선택</th>
+                    <th>책 제목</th>
+                    <th>가격</th>
+                    <th>수량</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item:${cart.cartItems}">
+                    <td>
+                        <input type="checkbox" name="cartItemIds" th:value="${item.cartItemId}">
+                    </td>
+                    <td th:text="${item.bookTitle}">책 제목</td>
+                    <td th:text="${item.price}">가격</td>
+                    <td><input type="number" name="counts" th:value="${item.count}" min="1" style="width: 50px;"></td>
+                    <td>
+                        <form th:action="@{/cart/remove}" method="post">
+                            <input type="hidden" name="cartItemId" th:value="${item.cartItemId}">
+                            <button type="submit">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">선택 상품 주문하기</button>
+    </form>
+    <div>
+        <a th:href="@{/books}">책 목록으로 돌아가기</a>
+    </div>
+</body>
+</html>

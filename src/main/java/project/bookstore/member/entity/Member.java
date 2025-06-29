@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.bookstore.global.config.baseEntity;
 import project.bookstore.order.entity.Order;
-import project.bookstore.order.entity.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends baseEntity {
 
     @Id @GeneratedValue
     private Long id;

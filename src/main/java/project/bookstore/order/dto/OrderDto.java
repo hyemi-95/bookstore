@@ -2,6 +2,7 @@ package project.bookstore.order.dto;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.bookstore.member.entity.Member;
 import project.bookstore.order.entity.OrderItem;

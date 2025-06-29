@@ -12,9 +12,9 @@
     <div>비고 : <span th:text="${book.isbn}"></span></div>
 
     <!--주문하기버튼-->
-    <form th:action="@{/orders/new}" method="get">
+    <form th:action="@{/cart/add}" method="post">
         <input type="hidden" name="bookId" th:value="${book.id}"/>
-        <button type="submit">주문하기</button>
+        <button type="submit">장바구니에 담기</button>
     </form>
 
     <div>
