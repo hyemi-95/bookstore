@@ -8,6 +8,10 @@
 </head>
 <body>
     <h1>장바구니 목록</h1>
+    <!--에러메세지-->
+    <div th:if="${error}" style="color: red; font-weight: bold;">
+        <span th:text="${error}"></span>
+    </div>
     <!--검색 폼-->
     <form th:action="@{/cart}" method="get" style="margin-bottom: 20px">
         <input type="date" name="startDate" th:value="${param.startDate}">
@@ -42,7 +46,7 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit">선택 상품 주문하기</button>
+        <button type="submit" th:disabled="${#lists.isEmpty(cart.cartItems)}">선택 상품 주문하기</button>
     </form>
     <div>
         <a th:href="@{/books}">책 목록으로 돌아가기</a>
