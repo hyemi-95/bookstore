@@ -3,11 +3,9 @@ package project.bookstore.cart.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import project.bookstore.cart.dto.CartDto;
+import project.bookstore.cart.dto.CartSearchCondition;
 import project.bookstore.cart.service.CartService;
 
 import java.security.Principal;
@@ -21,8 +19,8 @@ public class CartController {
 
     //장바구니 조회
     @GetMapping
-    public String cartList(Model model, Principal principal) {
-        CartDto cart = cartService.getCartByMember(principal.getName());
+    public String cartList(@ModelAttribute("condition") CartSearchCondition condition, Model model, Principal principal) {
+        CartDto cart = cartService.getCartByMember(principal.getName(), condition);
         model.addAttribute("cart", cart);
         return "cart/cartList";
     }

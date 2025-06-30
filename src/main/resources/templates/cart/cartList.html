@@ -2,10 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>장바구니</title>
 </head>
 <body>
     <h1>장바구니 목록</h1>
+    <!--검색 폼-->
+    <form th:action="@{/cart}" method="get" style="margin-bottom: 20px">
+        <input type="date" name="startDate" th:value="${param.startDate}">
+        ~
+        <input type="date" name="endDate" th:value="${param.endDate}">
+        <input type="text" name="title" placeholder="책 제목" th:value="${param.title}">
+        <button type="submit">검색</button>
+        <a th:href="@{/cart}">초기화</a>
+    </form>
     <form th:action="@{/orders/form-cart}" method="post" id="cartOrderForm">
         <table border="1">
             <thead>
@@ -26,10 +37,7 @@
                     <td th:text="${item.price}">가격</td>
                     <td><input type="number" name="counts" th:value="${item.count}" min="1" style="width: 50px;"></td>
                     <td>
-                        <form th:action="@{/cart/remove}" method="post">
-                            <input type="hidden" name="cartItemId" th:value="${item.cartItemId}">
-                            <button type="submit">삭제</button>
-                        </form>
+                        <button type="button" th:onclick="'removeCartItem('+${item.cartItemId}+')'">삭제</button>
                     </td>
                 </tr>
             </tbody>
@@ -40,4 +48,40 @@
         <a th:href="@{/books}">책 목록으로 돌아가기</a>
     </div>
 </body>
+<script>
+    function removeCartItem(cartItemId) { //삭제용 폼
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+
+        const form = document.createElement('form');
+        form.method ='post';
+        form.action ='/cart/remove'
+
+        const input = document.createElement('input');
+        input.type ='hidden';
+        input.name ='cartItemId';
+        input.value = cartItemId;
+        form.appendChild(input);
+
+        //CSRF 토큰 추가
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    document.getElementById('cartOrderForm').addEventListener('submit', function (e){
+        //체크박스 중에 1개라도 체크가 되어있는지
+        const checked = document.querySelectorAll('input[name="cartItemIds"]:checked');
+
+        if (checked.length === 0) {
+            alert('상품을 선택해주세요.');
+            e.preventDefault();// 폼 제출 막기
+        }
+    })
+</script>
 </html>

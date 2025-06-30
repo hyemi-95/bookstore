@@ -6,6 +6,6 @@ import project.bookstore.order.entity.Order;
 
 import java.util.List;
 
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> ,OrderRepositoryCustom {
     List<Order> findByMember(Member member);
 }

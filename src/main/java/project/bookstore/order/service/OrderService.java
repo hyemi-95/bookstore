@@ -11,6 +11,7 @@ import project.bookstore.deilvery.entity.Delivery;
 import project.bookstore.member.entity.Member;
 import project.bookstore.member.repository.MemberRepository;
 import project.bookstore.order.dto.OrderDto;
+import project.bookstore.order.dto.OrderSearchCondition;
 import project.bookstore.order.entity.Order;
 import project.bookstore.order.entity.OrderItem;
 import project.bookstore.order.repository.OrderRepository;
@@ -44,11 +45,11 @@ public class OrderService {
 
     //주문목로(DTO)
     @Transactional
-    public List<OrderDto> findOrdersByMember(Long memberId){
+    public List<OrderDto> findOrdersByMember(Long memberId, OrderSearchCondition condition){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
-        List<Order> orders = orderRepository.findByMember(member);
+        List<Order> orders = orderRepository.findByMemberAndCondition(member, condition);
 
         List<OrderDto> result = new ArrayList<>();
 

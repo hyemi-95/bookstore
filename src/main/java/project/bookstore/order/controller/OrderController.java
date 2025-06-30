@@ -12,6 +12,7 @@ import project.bookstore.member.entity.Member;
 import project.bookstore.member.service.MemberService;
 import project.bookstore.order.dto.OrderDto;
 import project.bookstore.order.dto.OrderFormDto;
+import project.bookstore.order.dto.OrderSearchCondition;
 import project.bookstore.order.service.OrderService;
 
 import java.security.Principal;
@@ -77,9 +78,9 @@ public class OrderController {
      * @return
      */
     @GetMapping
-    public String orderList(Model model, Principal principal) {
+    public String orderList(Model model, Principal principal, @ModelAttribute("condition") OrderSearchCondition condition) {
         Member member = memberService.findByEmail(principal.getName());
-        List<OrderDto> orders = orderService.findOrdersByMember(member.getId());
+        List<OrderDto> orders = orderService.findOrdersByMember(member.getId(), condition);
         model.addAttribute("orders", orders);
 
         return "order/orderList";

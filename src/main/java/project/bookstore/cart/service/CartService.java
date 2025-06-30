@@ -7,6 +7,7 @@ import project.bookstore.book.entity.Book;
 import project.bookstore.book.service.BookService;
 import project.bookstore.cart.dto.CartDto;
 import project.bookstore.cart.dto.CartItemDto;
+import project.bookstore.cart.dto.CartSearchCondition;
 import project.bookstore.cart.entity.Cart;
 import project.bookstore.cart.entity.CartItem;
 import project.bookstore.cart.repository.CartItemRepository;
@@ -32,12 +33,12 @@ public class CartService {
     private final BookService bookService;
 
     //장바구니 조회(DTO)
-    public CartDto getCartByMember(String email){
+    public CartDto getCartByMember(String email, CartSearchCondition condition){
         Member member = memberService.findByEmail(email);
         Cart cart = cartRepository.findByMember(member)
                 .orElseGet(()-> createCart(member));//없으면 새로 생성
 
-        List<CartItem> items = cartItemRepository.findByCart(cart);
+        List<CartItem> items = cartItemRepository.searchByCartAndCondition(cart, condition);
         List<CartItemDto> itemDtos = items.stream()
                 .map(item -> new CartItemDto(
                         item.getId(),

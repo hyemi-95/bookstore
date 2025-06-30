@@ -6,6 +6,20 @@
 </head>
 <body>
     <h1>내 주문 목록</h1>
+    <form th:action="@{/orders}" method="get" style="margin-bottom:20px;">
+        <label>시작일: <input type="date" name="startDate" th:value="${condition.startDate}"></label>
+        <label>종료일: <input type="date" name="endDate" th:value="${condition.endDate}"></label>
+        <label>책 제목: <input type="text" name="title" placeholder="책 제목" th:value="${condition.title}"></label>
+        <label>상태:
+            <select name="status">
+                <option th:value="''" th:text="전체" th:selected="${condition.status ==null}">전체</option>
+                <option th:value="ORDER" th:text="주문" th:selected="${condition.status?.name() == 'ORDER'}">주문</option>
+                <option th:value="CANCEL" th:text="취소" th:selected="${condition.status?.name() == 'CANCEL'}">취소</option>
+            </select>
+        </label>
+        <button type="submit">검색</button>
+        <a th:href="@{/orders}">초기화</a>
+    </form>
     <table>
         <thead>
         <tr>

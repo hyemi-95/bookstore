@@ -8,7 +8,7 @@ import project.bookstore.cart.entity.CartItem;
 import java.util.List;
 import java.util.Optional;
 
-public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+public interface CartItemRepository extends JpaRepository<CartItem, Long>, CartItemRepositoryCustom {
    //cart 내 모든 item조회
     List<CartItem> findByCart(Cart cart);
     
