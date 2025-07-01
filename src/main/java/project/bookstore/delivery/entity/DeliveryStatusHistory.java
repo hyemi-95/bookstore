@@ -3,13 +3,13 @@ package project.bookstore.delivery.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.bookstore.global.config.baseEntity;
+import project.bookstore.global.config.BaseEntity;
 import project.bookstore.member.entity.Member;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class DeliveryStatusHistory extends baseEntity {
+public class DeliveryStatusHistory extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;

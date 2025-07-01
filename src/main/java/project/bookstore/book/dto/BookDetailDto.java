@@ -14,6 +14,8 @@ public class BookDetailDto { //상세용
     private  String isbn;
     private Boolean isUsed;//중고 여부
 
+    private String description; // 책 내용
+
     public BookDetailDto(Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
@@ -22,5 +24,6 @@ public class BookDetailDto { //상세용
         this.stockQuantity = book.getStockQuantity();
         this.isbn = book.getIsbn();
         this.isUsed = book.getIsUsed();
+        this.description = book.getDescription();
     }
 }

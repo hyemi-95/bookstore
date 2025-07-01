@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.bookstore.delivery.entity.Delivery;
-import project.bookstore.global.config.baseEntity;
+import project.bookstore.global.config.BaseEntity;
 import project.bookstore.member.entity.Member;
 
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders")
-public class Order extends baseEntity {
+public class Order extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

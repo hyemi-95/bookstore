@@ -9,7 +9,8 @@
     <div>저자 : <span th:text="${book.author}"></span></div>
     <div>가격 : <span th:text="${book.price}"></span></div>
     <div>재고 : <span th:text="${book.stockQuantity}"></span></div>
-    <div>비고 : <span th:text="${book.isbn}"></span></div>
+    <div>ISBN : <span th:text="${book.isbn}"></span></div>
+    <div>책 설명 : <span th:text="${book.description}"></span></div>
 
     <!--주문하기버튼-->
     <form th:action="@{/cart/add}" method="post">

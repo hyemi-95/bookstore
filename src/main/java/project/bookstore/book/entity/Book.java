@@ -1,18 +1,15 @@
 package project.bookstore.book.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.bookstore.global.config.baseEntity;
+import project.bookstore.global.config.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Book extends baseEntity {
+public class Book extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;
@@ -29,25 +26,31 @@ public class Book extends baseEntity {
 
     private String isbn; //국제 표준 도서번호(13자리의 숫자 : 978-89-5090-173-0)
 
+    @Lob
+    @Column(nullable = true)
+    private String description; // 책 내용 설명
+
     @Column(nullable = false)
     private Boolean isUsed = false; //기본값은 false
 
-    public Book(String title, String author, int price, int stockQuantity, Boolean isUsed, String isbn) {
+    public Book(String title, String author, int price, int stockQuantity, Boolean isUsed, String isbn, String description) {
         this.title = title;
         this.author = author;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.isUsed = isUsed;
         this.isbn = isbn;
+        this.description =description;
     }
 
-    public void update(String title, String author, int price, int stockQuantity, Boolean isUsed,  String isbn) {
+    public void update(String title, String author, int price, int stockQuantity, Boolean isUsed,  String isbn,String description) {
         this.title = title;
         this.author = author;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.isUsed = isUsed;
         this.isbn = isbn;
+        this.description =description;
     }
 
     public void removeStock(int quantity) { //재고 차감

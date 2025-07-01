@@ -2,9 +2,11 @@ package project.bookstore.member.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import project.bookstore.member.entity.Role;
 
 @Getter @Setter
 public class SignupForm {
@@ -19,4 +21,7 @@ public class SignupForm {
 
     @NotBlank(message = "닉네임은 필수입니다.")
     private String nickname;
+    
+    @NotNull(message = "회원 유형을 선택하세요.")
+    private Role role;
 }

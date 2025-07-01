@@ -30,8 +30,9 @@ public class BookService {
                 form.getAuthor(),
                 form.getPrice(),
                 form.getStockQuantity(),
-                form.getIsUsed(),
-                form.getIsbn()
+                false,
+                form.getIsbn(),
+                form.getDescription()
         );
 
         bookRepository.save(book);
@@ -55,8 +56,9 @@ public class BookService {
                 form.getAuthor(),
                 form.getPrice(),
                 form.getStockQuantity(),
-                form.getIsUsed(),
-                form.getIsbn()
+                false,
+                form.getIsbn(),
+                form.getDescription()
         );
 
     }

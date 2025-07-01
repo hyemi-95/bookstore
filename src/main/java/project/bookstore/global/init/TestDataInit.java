@@ -36,8 +36,15 @@ public class TestDataInit {
                 "관리자",
                 Role.ADMIN
         );
+        Member seller = new Member(
+                "seller@book.com",
+                passwordEncoder.encode("123456"),
+                "테스트판매자",
+                Role.SELLER
+        );
         memberRepository.save(member1);
         memberRepository.save(admin);
+        memberRepository.save(seller);
 
         Book book1 = new Book(
                 "이펙티브 자바",
@@ -45,7 +52,8 @@ public class TestDataInit {
                 38000,
                 10,
                 false,
-                "978-89-7914-874-6"
+                "978-89-7914-874-6",
+                "이펙티브 자바에 대한 책 설명"
         );
         Book book2 = new Book(
                 "스프링 마스터",
@@ -53,15 +61,17 @@ public class TestDataInit {
                 20000,
                 4000,
                 false,
-                ""
+                "",
+                "스프링 마스터에 대한 책 설명"
         );
         Book book3 = new Book(
-                "중고책",
+                "혼공머신",
                 "신데렐라",
                 35000,
                 600,
                 true,
-                ""
+                "",
+                "혼공머신에 대한 책 설명"
         );
         bookRepository.save(book1);
         bookRepository.save(book2);

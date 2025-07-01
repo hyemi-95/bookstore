@@ -15,11 +15,14 @@ public class BookListDto { //목록 조회용
     private int price; //가격
     private Boolean isUsed;//중고 여부
 
+    private String description; // 책 내용
+
     public BookListDto(Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.author = book.getAuthor();
         this.price = book.getPrice();
         this.isUsed = book.getIsUsed();
+        this.description = book.getDescription();
     }
 }

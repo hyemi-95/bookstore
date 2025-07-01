@@ -37,7 +37,7 @@ public class MemberService {
                 form.getEmail(),
                 encodedPassword,
                 form.getNickname(),
-                Role.USER // 기본 가입자는 일반 사용자 지정
+                form.getRole()
         );
 
         //회원 저장

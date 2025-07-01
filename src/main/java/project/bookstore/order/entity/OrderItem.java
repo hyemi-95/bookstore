@@ -5,12 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.bookstore.book.entity.Book;
-import project.bookstore.global.config.baseEntity;
+import project.bookstore.global.config.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderItem extends baseEntity {
+public class OrderItem extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;

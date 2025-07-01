@@ -23,6 +23,8 @@ public class BookForm {
 
     private String isbn;
 
+    private String description; // 책 내용
+
     private Boolean isUsed;//중고 여부
 
 }

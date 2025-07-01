@@ -106,6 +106,7 @@ public class BookController {
         form.setStockQuantity(book.getStockQuantity());
         form.setIsUsed(book.getIsUsed());
         form.setIsbn(book.getIsbn());
+        form.setDescription(book.getDescription());
 
         model.addAttribute("bookForm", form);
         model.addAttribute("bookId", id);
