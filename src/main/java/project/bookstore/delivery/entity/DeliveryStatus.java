@@ -1,4 +1,4 @@
-package project.bookstore.deilvery.entity;
+package project.bookstore.delivery.entity;
 
 public enum DeliveryStatus {
 

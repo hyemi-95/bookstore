@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.bookstore.deilvery.entity.Delivery;
+import project.bookstore.delivery.entity.Delivery;
 import project.bookstore.global.config.baseEntity;
 import project.bookstore.member.entity.Member;
 

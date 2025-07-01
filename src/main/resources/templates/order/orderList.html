@@ -36,7 +36,7 @@
         </thead>
         <tbody>
             <tr th:each="order : ${orders}">
-                <td th:text="${order.orderId}"></td>
+                <td><a th:href="@{/delivery/{id}(id=${order.deliveryId})}" th:text="${order.orderId}"></a></td>
                 <td th:text="${order.status}"></td>
                 <td th:text="${order.deliveryStatus}"></td>
                 <td th:text="${order.receiver}"></td>
@@ -67,7 +67,8 @@
                     <form  th:if="${order.status.name() == 'ORDER' and order.deliveryStatus.name() == 'READY'}" th:action="@{/orders/{orderId}/cancel(orderId=${order.orderId})}" method="post">
                         <button type="submit">주문 취소</button>
                     </form>
-                    <span th:if="${order.status.name() != 'ORDER' or order.deliveryStatus.name() != 'READY'}" style="color: #aaa">취소 불가</span>
+                    <span th:if="${order.status.name() == 'CANCEL' and  order.deliveryStatus.name() == 'CANCEL'}" style="color: #aaa">취소 완료</span>
+                    <span th:if="${order.status.name() == 'ORDER' and (order.deliveryStatus.name() == 'COMPLETE' or order.deliveryStatus.name() == 'SHIPPING')}" style="color: #aaa">취소 불가</span>
                 </td>
             </tr>
         </tbody>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>배송 상세 정보</title>
+    <meta charset="UTF-8">
+    <style>
+        table, th, td { border:1px solid #ccc; border-collapse:collapse; padding:6px; }
+        th { background:#f7f7f7; }
+    </style>
+</head>
+<body>
+<h2>배송 상세 정보</h2>
+
+<table>
+    <tr>
+        <th>배송번호</th>
+        <td th:text="${delivery.id}"></td>
+    </tr>
+    <tr>
+        <th>수령인</th>
+        <td th:text="${delivery.receiver}"></td>
+    </tr>
+    <tr>
+        <th>주소</th>
+        <td th:text="${delivery.address}"></td>
+    </tr>
+    <tr>
+        <th>연락처</th>
+        <td th:text="${delivery.phone}"></td>
+    </tr>
+    <tr>
+        <th>현재 배송상태</th>
+        <td th:text="${delivery.status}"></td>
+    </tr>
+</table>
+<br>
+
+<!-- 권한: 관리자/판매자만 상태변경 폼 노출 -->
+<div th:if="${currentUser.adminOrSeller}">
+    <h4>배송상태 변경</h4>
+    <form th:action="@{/delivery/{id}/status-change(id=${delivery.id})}" method="post">
+        <select name="newStatus">
+            <option th:value="READY" th:selected="${delivery.status == 'READY'}">배송준비중</option>
+            <option th:value="SHIPPING" th:selected="${delivery.status == 'SHIPPING'}">배송중</option>
+            <option th:value="COMPLETE" th:selected="${delivery.status == 'COMPLETE'}">배송완료</option>
+            <option th:value="CANCEL" th:selected="${delivery.status == 'CANCEL'}">배송취소</option>
+        </select>
+        <button type="submit">상태 변경</button>
+    </form>
+</div>
+<br>
+<h4>배송상태 변경 이력</h4>
+<table>
+    <thead>
+    <tr>
+        <th>변경일시</th>
+        <th>이전상태</th>
+        <th>변경후상태</th>
+        <th>변경자</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="history : ${historyList}">
+        <td th:text="${#temporals.format(history.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${history.beforeStatus}"></td>
+        <td th:text="${history.afterStatus}"></td>
+        <td th:text="${history.changer.nickname}"></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(historyList)}">
+        <td colspan="4" style="text-align:center; color:#aaa;">변경 이력이 없습니다.</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{/orders}">주문 목록으로</a>
+</body>
+</html>

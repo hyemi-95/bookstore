@@ -1,17 +1,12 @@
 package project.bookstore.order.dto;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import project.bookstore.deilvery.dto.DeliveryDto;
-import project.bookstore.deilvery.entity.DeliveryStatus;
-import project.bookstore.member.entity.Member;
-import project.bookstore.order.entity.OrderItem;
+import project.bookstore.delivery.entity.DeliveryStatus;
 import project.bookstore.order.entity.OrderStatus;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 //주문목록용(DTO)
@@ -27,6 +22,8 @@ public class OrderDto {
     private String address;
     private String phone;
     private DeliveryStatus deliveryStatus;
+
+    private Long deliveryId;
 
     //주문 상품 리스트
     private List<OrderItemDto>  items;

@@ -1,8 +1,8 @@
-package project.bookstore.deilvery.dto;
+package project.bookstore.delivery.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import project.bookstore.deilvery.entity.DeliveryStatus;
+import project.bookstore.delivery.entity.DeliveryStatus;
 
 @Getter @Setter
 public class DeliveryDto { //배송정보 입력/조회용

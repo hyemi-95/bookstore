@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.bookstore.cart.dto.CartItemDto;
-import project.bookstore.deilvery.entity.DeliveryStatus;
+import project.bookstore.delivery.entity.DeliveryStatus;
 
 import java.util.List;
 

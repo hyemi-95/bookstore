@@ -1,4 +1,4 @@
-package project.bookstore.deilvery.entity;
+package project.bookstore.delivery.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,5 +35,9 @@ public class Delivery extends baseEntity {
 
     public void addDelivery(Order order) {
         this.order = order;
+    }
+
+    public void changeStatus(DeliveryStatus newStatus) {
+        this.status = newStatus;
     }
 }

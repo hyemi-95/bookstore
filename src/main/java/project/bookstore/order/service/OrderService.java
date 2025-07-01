@@ -3,12 +3,13 @@ package project.bookstore.order.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.bookstore.book.Repository.BookRepository;
 import project.bookstore.book.entity.Book;
 import project.bookstore.cart.entity.CartItem;
 import project.bookstore.cart.repository.CartItemRepository;
-import project.bookstore.deilvery.entity.Delivery;
-import project.bookstore.deilvery.entity.DeliveryStatus;
+import project.bookstore.delivery.entity.Delivery;
+import project.bookstore.delivery.entity.DeliveryStatus;
+import project.bookstore.delivery.entity.DeliveryStatusHistory;
+import project.bookstore.delivery.repository.DeliveryStatusHistoryRepository;
 import project.bookstore.member.entity.Member;
 import project.bookstore.member.repository.MemberRepository;
 import project.bookstore.order.dto.OrderDto;
@@ -28,11 +29,11 @@ public class OrderService {
 
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
-
     private  final CartItemRepository cartItemRepository;
+    private  final DeliveryStatusHistoryRepository historyRepository;
 
     //주문 취소
-    public void cancelOrder(Long orderId) {
+    public void cancelOrder(Long orderId, Member currentUser) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(()-> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
@@ -42,6 +43,17 @@ public class OrderService {
         }
         
         order.cancel();//주문 상태 변경 및 재고복구 등 비즈니스 로직
+
+        Delivery delivery = order.getDelivery();
+        DeliveryStatus before = delivery.getStatus();//변경 전 상태
+
+
+        //취문 취소에 따라 배송상태도  CANCEL
+        order.getDelivery().changeStatus(DeliveryStatus.CANCEL); //상태 변경
+
+        //취소에 따른 배송상태 이력 추가
+        DeliveryStatusHistory history = new DeliveryStatusHistory(delivery, before, DeliveryStatus.CANCEL, currentUser);
+        historyRepository.save(history);
     }
 
     //주문목로(DTO)
@@ -64,6 +76,7 @@ public class OrderService {
             orderDto.setAddress(order.getDelivery().getAddress());
             orderDto.setPhone(order.getDelivery().getPhone());
             orderDto.setDeliveryStatus(order.getDelivery().getStatus());
+            orderDto.setDeliveryId(order.getDelivery().getId());
 
             //상품리스트 세팅
             List<OrderItemDto> items = new ArrayList<>();

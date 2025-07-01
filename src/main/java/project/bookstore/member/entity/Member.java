@@ -38,4 +38,16 @@ public class Member extends baseEntity {
         this.nickname = nickname;
         this.role = role;
     }
+
+    public boolean isAdmin(){
+        return this.role == Role.ADMIN;
+    }
+
+    public boolean isSeller(){
+        return this.role == Role.SELLER;
+    }
+
+    public boolean isAdminOrSeller(){
+        return this.role == Role.ADMIN || this.role == Role.SELLER;
+    }
 }

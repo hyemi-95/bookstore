@@ -1,6 +1,7 @@
-package project.bookstore.order.controller;
+package project.bookstore.order.service.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import project.bookstore.cart.dto.CartItemDto;
 import project.bookstore.cart.dto.CartSearchCondition;
 import project.bookstore.cart.service.CartService;
 import project.bookstore.member.entity.Member;
+import project.bookstore.member.security.CustomUserDetails;
 import project.bookstore.member.service.MemberService;
 import project.bookstore.order.dto.OrderDto;
 import project.bookstore.order.dto.OrderFormDto;
@@ -99,8 +101,9 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/cancel")
-    public String cancelOrder(@PathVariable Long orderId) {
-        orderService.cancelOrder(orderId);
+    public String cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member currentUser = userDetails.getMember();
+        orderService.cancelOrder(orderId, currentUser);
         return "redirect:/orders";
     }
 }
