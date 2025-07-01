@@ -20,30 +20,54 @@
         <button type="submit">검색</button>
         <a th:href="@{/orders}">초기화</a>
     </form>
-    <table>
+    <table border="1">
         <thead>
         <tr>
             <th>주문번호</th>
-            <th>책 제목</th>
-            <th>주문금액</th>
-            <th>수량</th>
-            <th>상태</th>
+            <th>주문상태</th>
+            <th>배송상태</th>
+            <th>수령인</th>
+            <th>주소</th>
+            <th>연락처</th>
             <th>주문일시</th>
+            <th>상품목록</th>
             <th>주문 취소</th>
         </tr>
         </thead>
         <tbody>
             <tr th:each="order : ${orders}">
-                <td th:text="${order.orderId}">주문번호</td>
-                <td th:text="${order.bookTitle}">책 제목</td>
-                <td th:text="${order.orderPrice}">주문금액</td>
-                <td th:text="${order.count}">수량</td>
-                <td th:text="${order.status}">상태</td>
-                <td th:text="${#temporals.format(order.orderDate,'yyyy-MM-dd HH:mm')}">주문일시</td>
+                <td th:text="${order.orderId}"></td>
+                <td th:text="${order.status}"></td>
+                <td th:text="${order.deliveryStatus}"></td>
+                <td th:text="${order.receiver}"></td>
+                <td th:text="${order.address}"></td>
+                <td th:text="${order.phone}"></td>
+                <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>
-                    <form th:action="@{/orders/{orderId}/cancel(orderId=${order.orderId})}" method="post" th:if="${order.status.name() == 'ORDER'}">
+                    <table border="1">
+                        <tr>
+                            <th>책 제목</th>
+                            <th>단가</th>
+                            <th>수량</th>
+                            <th>금액</th>
+                        </tr>
+                        <tr th:each="item : ${order.items}">
+                            <td th:text="${item.bookTitle}"></td>
+                            <td th:text="${#numbers.formatInteger(item.orderPrice, 0 , 'COMMA')}"></td>
+                            <td th:text="${item.count}"></td>
+                            <td th:text="${#numbers.formatInteger(item.totalPrice, 0 , 'COMMA')}"></td>
+                        </tr>
+                        <tr>
+                            <td th:colspan="3" style="text-align: center"><b>주문 합계</b></td>
+                            <td th:text="${#numbers.formatInteger(order.totalPrice, 0 , 'COMMA')}" style="font-weight: bold"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <form  th:if="${order.status.name() == 'ORDER' and order.deliveryStatus.name() == 'READY'}" th:action="@{/orders/{orderId}/cancel(orderId=${order.orderId})}" method="post">
                         <button type="submit">주문 취소</button>
                     </form>
+                    <span th:if="${order.status.name() != 'ORDER' or order.deliveryStatus.name() != 'READY'}" style="color: #aaa">취소 불가</span>
                 </td>
             </tr>
         </tbody>

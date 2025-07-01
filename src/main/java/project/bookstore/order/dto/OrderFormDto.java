@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.bookstore.cart.dto.CartItemDto;
+import project.bookstore.deilvery.entity.DeliveryStatus;
 
 import java.util.List;
 
@@ -15,10 +16,9 @@ public class OrderFormDto {
 
     // 배송지 입력 정보
     private String address;     // 도로명/지번 주소 등
-    private String detail;      // 상세주소 (호수 등)
-    private String zipcode;     // 우편번호
     private String receiver;    // 받는사람 이름
     private String phone;       // 연락처
+    private DeliveryStatus status; // 배송상태
 
     public OrderFormDto(List<CartItemDto> cartItems) {
         this.cartItems = cartItems;

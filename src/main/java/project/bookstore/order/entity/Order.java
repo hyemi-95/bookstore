@@ -49,13 +49,14 @@ public class Order extends baseEntity {
     }
 
     //생성 메서드
-    public static Order createOrder(Member member, List<OrderItem> items){
+    public static Order createOrder(Member member, List<OrderItem> items, Delivery delivery){
         Order order = new Order();
         order.member = member;
 
         for (OrderItem item : items) {
             order.addOrderItem(item);
         }
+        order.addDelivery(delivery); //양방향 연결
         order.status = OrderStatus.ORDER;
         order.orderDate = LocalDateTime.now();
         return order;

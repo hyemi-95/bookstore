@@ -14,10 +14,9 @@
     </div>
     <!--검색 폼-->
     <form th:action="@{/cart}" method="get" style="margin-bottom: 20px">
-        <input type="date" name="startDate" th:value="${param.startDate}">
-        ~
-        <input type="date" name="endDate" th:value="${param.endDate}">
-        <input type="text" name="title" placeholder="책 제목" th:value="${param.title}">
+        <label>시작일: <input type="date" name="startDate" th:value="${param.startDate}"></label>
+        <label>종료일: <input type="date" name="endDate" th:value="${param.endDate}"></label>
+        <label>책 제목: <input type="text" name="title" placeholder="책 제목" th:value="${param.title}"></label>
         <button type="submit">검색</button>
         <a th:href="@{/cart}">초기화</a>
     </form>

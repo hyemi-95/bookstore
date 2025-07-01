@@ -8,9 +8,11 @@ import project.bookstore.book.entity.Book;
 import project.bookstore.cart.entity.CartItem;
 import project.bookstore.cart.repository.CartItemRepository;
 import project.bookstore.deilvery.entity.Delivery;
+import project.bookstore.deilvery.entity.DeliveryStatus;
 import project.bookstore.member.entity.Member;
 import project.bookstore.member.repository.MemberRepository;
 import project.bookstore.order.dto.OrderDto;
+import project.bookstore.order.dto.OrderItemDto;
 import project.bookstore.order.dto.OrderSearchCondition;
 import project.bookstore.order.entity.Order;
 import project.bookstore.order.entity.OrderItem;
@@ -34,13 +36,12 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(()-> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
-        order.cancel();
-    }
-
-    //단건 조회
-    public Order findOrder(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(()->new IllegalArgumentException("주문을 찾을 수 없습니다."));
+        //배송상태가 READY가 아닐 때는 취소 불가(배송상태 별 제한)
+        if (order.getDelivery().getStatus() != DeliveryStatus.READY) {
+            throw new IllegalStateException("배송이 시작된 주문은 취소할 수 없습니다.");
+        }
+        
+        order.cancel();//주문 상태 변경 및 재고복구 등 비즈니스 로직
     }
 
     //주문목로(DTO)
@@ -54,16 +55,33 @@ public class OrderService {
         List<OrderDto> result = new ArrayList<>();
 
         for (Order order : orders) {
+            //주문상태 및 배송정보
+            OrderDto orderDto = new OrderDto();
+            orderDto.setOrderId(order.getId());
+            orderDto.setStatus(order.getStatus());
+            orderDto.setOrderDate(order.getOrderDate());
+            orderDto.setReceiver(order.getDelivery().getReceiver());
+            orderDto.setAddress(order.getDelivery().getAddress());
+            orderDto.setPhone(order.getDelivery().getPhone());
+            orderDto.setDeliveryStatus(order.getDelivery().getStatus());
+
+            //상품리스트 세팅
+            List<OrderItemDto> items = new ArrayList<>();
+            
             for (OrderItem item : order.getOrderItems()) {
-                result.add(new OrderDto(
-                        order.getId(),
+                items.add(new OrderItemDto(
                         item.getBook().getTitle(),
                         item.getOrderPrice(),
-                        item.getCount(),
-                        order.getStatus(),
-                        order.getOrderDate()
+                        item.getCount()
                 ));
             }
+
+            int orderTotalPrice = items.stream().mapToInt(OrderItemDto::getTotalPrice).sum();//상품별 총액을 추출해서 int로 변환 후 모두더함
+            orderDto.setItems(items);
+            orderDto.setTotalPrice(orderTotalPrice);//주문별 총액
+
+            result.add(orderDto);
+
         }
         return result;
     }
@@ -90,9 +108,8 @@ public class OrderService {
         //배송정보 생성
         Delivery delivery = new Delivery(receiver,address,phone);
         //주문 생성
-        Order order = Order.createOrder(member, orderItems);//해당 메서드에서 양방향 메서드를 호출(Order내부에 주문 항목 추가(이떄 Order와 양방향이 연결됨)
-
-        order.addDelivery(delivery);
+        Order order = Order.createOrder(member, orderItems, delivery);//해당 메서드에서 양방향 메서드를 호출(Order내부에 주문 항목 추가(이떄 Order와 양방향이 연결됨)
+;
         orderRepository.save(order);
 
     }

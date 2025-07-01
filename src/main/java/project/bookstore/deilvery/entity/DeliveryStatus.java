@@ -2,6 +2,9 @@ package project.bookstore.deilvery.entity;
 
 public enum DeliveryStatus {
 
-    READY, SHIPPING, COMPLETE, CANCEL
-    //준비중.배송중.배송완료.취소
+    READY, //배송 준비 중
+    SHIPPING, // 배송 중
+    COMPLETE, // 배송 완료
+    CANCEL // 배송 취소
+    
 }

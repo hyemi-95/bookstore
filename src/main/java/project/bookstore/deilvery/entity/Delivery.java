@@ -16,11 +16,12 @@ public class Delivery extends baseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String receiver;
-    private String address;
-    private String phone;
+    private String receiver; //수령인
+    private String address; //배송 주소
+    private String phone; //연락처
 
-    private DeliveryStatus status; // READY, SHIPPING, COMPLETE
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status; // 배송상태 : READY, SHIPPING, COMPLETE
 
     @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
     private Order order;
@@ -29,6 +30,7 @@ public class Delivery extends baseEntity {
         this.receiver = receiver;
         this.address = address;
         this.phone = phone;
+        this.status = DeliveryStatus.READY; //생성 시 기본 배송상태 지정
     }
 
     public void addDelivery(Order order) {
