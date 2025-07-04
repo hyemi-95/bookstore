@@ -11,6 +11,8 @@ import project.bookstore.order.entity.Order;
 import project.bookstore.order.entity.OrderStatus;
 import project.bookstore.order.entity.QOrder;
 import project.bookstore.order.entity.QOrderItem;
+import project.bookstore.usedbook.entity.QUsedBook;
+import project.bookstore.usedbook.entity.UsedBook;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,17 +28,19 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         QOrder order = QOrder.order;
         QOrderItem orderItem = QOrderItem.orderItem;
         QBook book = QBook.book;
+        QUsedBook usedBook = QUsedBook.usedBook;
 
         return queryFactory
                 .selectFrom(order)
                 .distinct()
                 .leftJoin(order.orderItems, orderItem).fetchJoin()
                 .leftJoin(orderItem.book, book).fetchJoin()
+                .leftJoin(orderItem.usedBook, usedBook).fetchJoin()
                 .where(
                     order.member.eq(member),
                     orderDateGoe(order, condition.getStartDate()),
                     orderDateLt(order, condition.getEndDate()),
-                    bookTitleCantains(book, condition.getTitle()),
+                    bookTitleCantains(book, usedBook, condition.getTitle()),
                     orderStatusEq(order, condition.getStatus())
                 )
                 .fetch();
@@ -50,8 +54,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         return (endDate != null) ? order.createdDate.lt(endDate.plusDays(1).atStartOfDay()) : null;
     }
 
-    private BooleanExpression bookTitleCantains(QBook book, String title) {
-        return (title != null && !title.isBlank())? book.title.contains(title) : null;
+    private BooleanExpression bookTitleCantains(QBook book, QUsedBook usedBook, String title) {
+        return (title != null && !title.isBlank())? (book.title.containsIgnoreCase(title).or(usedBook.title.containsIgnoreCase(title))): null;
     }
 
     private BooleanExpression orderStatusEq(QOrder order, OrderStatus status) {

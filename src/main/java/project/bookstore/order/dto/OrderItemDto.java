@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter @Setter
 public class OrderItemDto {
     private String bookTitle;//책 제목
+
+    private String bookType; // NEW or USED
     private int orderPrice;//책 가격
     private int count;//수량
 

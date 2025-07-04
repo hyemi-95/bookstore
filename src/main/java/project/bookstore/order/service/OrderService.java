@@ -18,6 +18,7 @@ import project.bookstore.order.dto.OrderSearchCondition;
 import project.bookstore.order.entity.Order;
 import project.bookstore.order.entity.OrderItem;
 import project.bookstore.order.repository.OrderRepository;
+import project.bookstore.usedbook.entity.UsedBook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,10 +110,18 @@ public class OrderService {
             CartItem cartItem = cartItemRepository.findById(cartItemIds.get(i))
                     .orElseThrow(()->new IllegalArgumentException("장바구니에 해당 항목이 존재하지 않습니다."));
             Book book = cartItem.getBook();
+            UsedBook usedBook = cartItem.getUsedBook();
 
             cartItem.changeCount(counts.get(i));//수량 최신화
 
-            OrderItem orderItem = OrderItem.createOrderItem(book, book.getPrice(), cartItem.getCount());
+            OrderItem orderItem;
+            if (book != null) {//신간
+                orderItem = OrderItem.createOrderItem(book, book.getPrice(), cartItem.getCount());
+            } else if (usedBook != null) {//중고
+                orderItem = OrderItem.createOrderItem(usedBook, usedBook.getPrice(), cartItem.getCount());
+            } else {
+                throw new IllegalStateException("책 정보가 없습니다");
+            }
             orderItems.add(orderItem);//여러 주문항목을 하나의 리스트로 모으는 작업 -> 주문서에 담을 상품들을 먼저 리스트로 모아놓음(아직 Order와 노상관)
 
             cartItemRepository.delete(cartItem);//주문 완료 건은 장바구니에서 삭제

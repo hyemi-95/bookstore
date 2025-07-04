@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고책 상세정보</title>
+</head>
+<body>
+    <h1>중고책 상세정보</h1>
+
+    <div th:if="${usedBooks != null}">
+        <table border="1">
+            <tr>
+                <th>제목</th>
+                <td th:text="${usedBooks.title}"></td>
+            </tr>
+            <tr>
+                <th>저자</th>
+                <td th:text="${usedBooks.author}"></td>
+            </tr>
+            <tr>
+                <th>가격</th>
+                <td th:text="${usedBooks.price}"></td>
+            </tr>
+            <tr>
+                <th>상태</th>
+                <td th:text="${usedBooks.status}"></td>
+            </tr>
+            <tr>
+                <th>ISBN</th>
+                <td th:text="${usedBooks.isbn}"></td>
+            </tr>
+            <tr>
+                <th>설명</th>
+                <td th:text="${usedBooks.description}"></td>
+            </tr>
+            <tr>
+                <th>등록일</th>
+                <td th:text="${#temporals.format(usedBooks.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr>
+                <th>판매자</th>
+                <td th:text="${usedBooks.seller.nickname}"></td>
+            </tr>
+        </table>
+        <br>
+        <form th:action="@{/cart/add}" method="post">
+            <input type="hidden" name="usedBookId" th:value="${usedBooks.id}"/>
+            <button type="submit" th:disabled="${usedBooks.status.name() == 'SOLD'}">장바구니에 담기</button>
+        </form>
+        <div th:if="${usedBooks.status.name() == 'SOLD'}" style="color: red">판매 완료된 중고책입니다.</div>
+        <a th:href="@{/used/list}">목록으로</a>
+        <a th:href="@{/main}">메인으로</a>
+    </div>
+
+    <div th:if="${book == null}">
+        <p style="color:red;">존재하지 않는 책입니다.</p>
+        <a th:href="@{/used/list}">목록으로</a>
+    </div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package project.bookstore.order.service.controller;
+package project.bookstore.order.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

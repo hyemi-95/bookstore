@@ -9,6 +9,7 @@ import project.bookstore.cart.dto.CartSearchCondition;
 import project.bookstore.cart.entity.Cart;
 import project.bookstore.cart.entity.CartItem;
 import project.bookstore.cart.entity.QCartItem;
+import project.bookstore.usedbook.entity.QUsedBook;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,13 +22,15 @@ public class CartItemRepositoryImpl implements CartItemRepositoryCustom {
     public List<CartItem> searchByCartAndCondition(Cart cart, CartSearchCondition condition) {
         QCartItem cartItem = QCartItem.cartItem;
         QBook book = QBook.book;
+        QUsedBook usedBook = QUsedBook.usedBook;
 
        return queryFactory
                 .selectFrom(cartItem)
-                .join(cartItem.book, book).fetchJoin()
+                .leftJoin(cartItem.book, book).fetchJoin()
+                .leftJoin(cartItem.usedBook, usedBook).fetchJoin()
                 .where(
                         carEq(cartItem,cart),
-                        titleContains(book, condition.getTitle()),
+                        titleContains(book, usedBook, condition.getTitle()),
                         createDateGoe(cartItem, condition.getStartDate()),
                         createDateLoe(cartItem, condition.getEndDate())
                 )
@@ -41,8 +44,8 @@ public class CartItemRepositoryImpl implements CartItemRepositoryCustom {
     private BooleanExpression carEq(QCartItem cartItem, Cart cart) {//장바구니 조건
         return cart != null ? cartItem.cart.eq(cart) : null;
     }
-    private BooleanExpression titleContains(QBook book, String title) {//책 제목 조건
-        return (title != null && !title.isBlank()) ? book.title.contains(title) : null;
+    private BooleanExpression titleContains(QBook book, QUsedBook usedBook, String title) {//책 제목 조건
+        return (title != null && !title.isBlank()) ? book.title.containsIgnoreCase(title).or(usedBook.title.containsIgnoreCase(title)) : null;
     }
 
     private Predicate createDateGoe(QCartItem cartItem, LocalDate startDate) {//시작일(이상)

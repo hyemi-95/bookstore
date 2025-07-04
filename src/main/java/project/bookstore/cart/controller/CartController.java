@@ -27,10 +27,15 @@ public class CartController {
 
     //장바구니 담기
     @PostMapping("/add")
-    public String addToCart(@RequestParam Long bookId,
+    public String addToCart(@RequestParam(required = false) Long bookId,
+                            @RequestParam (required = false)Long usedBookId,
                             @RequestParam(defaultValue = "1") int count,
                             Principal principal) {
-        cartService.addToCart(principal.getName(), bookId, count);
+        //둘 다 null이면 예외
+        if (bookId == null && usedBookId == null) {
+            throw new IllegalArgumentException("책 또는 중고책 ID는 필수입니다.");
+        }
+        cartService.addToCart(principal.getName(), bookId, usedBookId, count);
         return "redirect:/cart";
     }
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 중고책 판매신청 목록</title>
+</head>
+<body>
+    <h1>내 중고책 판매신청 목록</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>신청번호</th>
+            <th>제목</th>
+            <th>저자</th>
+            <th>가격</th>
+            <th>상태</th>
+            <th>거절사유</th>
+            <th>신청일</th>
+            <th>수정</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${requests}">
+            <td><a th:href="@{'/seller/request/my/' + ${request.id}}" th:text="${request.id}"></a></td>
+            <td th:text="${request.title}"></td>
+            <td th:text="${request.author}"></td>
+            <td th:text="${request.price}"></td>
+            <td th:text="${request.status}"></td>
+            <td th:text="${request.rejectReason} ?: '-'"></td>
+            <td th:text="${#temporals.format(request.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <span th:if="${request.status.name() == 'PENDING'}">
+                      | <a th:href="@{'/seller/request/my/' + ${request.id} + '/edit'}">수정</a>
+                    </span>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(requests)}">
+            <td colspan="8" style="text-align:center;">신청 내역이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/main">메인으로</a>
+    <a href="/seller/request/new">+ 판매신청하기</a>
+</body>
+</html>

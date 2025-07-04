@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고책 판매신청</title>
+</head>
+<body>
+    <h1>중고책 판매신청</h1>
+    <form th:action="@{/seller/request/new}" th:object="${usedBookRequest}" method="post">
+        <div>
+            <label>제목</label>
+            <input type="text" th:field="*{title}" required>
+            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+        <div>
+            <label>저자</label>
+            <input type="text" th:field="*{author}" required>
+            <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+        </div>
+        <div>
+            <label>가격</label>
+            <input type="number" th:field="*{price}" min="0" required>
+            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+        </div>
+        <div>
+            <label>ISBN</label>
+            <input type="text" th:field="*{isbn}">
+        </div>
+        <div>
+            <label>설명</label>
+            <textarea th:field="*{description}"></textarea>
+        </div>
+        <button type="submit">신청하기</button>
+    </form>
+    <a href="/main">메인으로</a>
+</body>
+</html>

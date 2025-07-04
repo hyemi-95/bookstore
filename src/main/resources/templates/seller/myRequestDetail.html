@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고책 판매신청 상세</title>
+</head>
+<body>
+    <h1>판매신청 상세</h1>
+    <table>
+        <tr>
+            <th>신청번호</th>
+            <td th:text="${request.id}"></td>
+        </tr>
+        <tr>
+            <th>제목</th>
+            <td th:text="${request.title}"></td>
+        </tr>
+        <tr>
+            <th>저자</th>
+            <td th:text="${request.author}"></td>
+        </tr>
+        <tr>
+            <th>가격</th>
+            <td th:text="${request.price}"></td>
+        </tr>
+        <tr>
+            <th>ISBN</th>
+            <td th:text="${request.isbn}"></td>
+        </tr>
+        <tr>
+            <th>설명</th>
+            <td th:text="${request.description}"></td>
+        </tr>
+        <tr>
+            <th>상태</th>
+            <td th:text="${request.status}"></td>
+        </tr>
+        <tr th:if="${request.status.name() == 'REJECTED'}">
+            <th>거절 사유</th>
+            <td th:text="${request.rejectReason}"></td>
+        </tr>
+        <tr>
+            <th>신청일시</th>
+            <td th:text="${#temporals.format(request.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+    </table>
+
+    <div>
+        <!-- 상태가 대기일 때만 수정 버튼 노출 -->
+        <span th:if="${request.status.name() == 'PENDING'}">
+                <a th:href="@{'/seller/request/my/' + ${request.id} + '/edit'}">수정</a>
+            </span>
+        <a href="/seller/request/my">목록으로</a>
+        <a href="/main">메인으로</a>
+    </div>
+</body>
+</html>

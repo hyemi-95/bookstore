@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <title>판매신청 상세</title>
+</head>
+<body>
+  <h1>중고책 판매신청 상세 (관리자)</h1>
+  <table border="1">
+    <tr>
+      <th>신청번호</th>
+      <td th:text="${request.id}"></td>
+    </tr>
+    <tr>
+      <th>제목</th>
+      <td th:text="${request.title}"></td>
+    </tr>
+    <tr>
+      <th>저자</th>
+      <td th:text="${request.author}"></td>
+    </tr>
+    <tr>
+      <th>가격</th>
+      <td th:text="${request.price}"></td>
+    </tr>
+    <tr>
+      <th>ISBN</th>
+      <td th:text="${request.isbn}"></td>
+    </tr>
+    <tr>
+      <th>설명</th>
+      <td th:text="${request.description}"></td>
+    </tr>
+    <tr>
+      <th>판매자</th>
+      <td th:text="${request.seller.nickname}"></td>
+    </tr>
+    <tr>
+      <th>신청상태</th>
+      <td th:text="${request.status}"></td>
+    </tr>
+    <tr th:if="${request.status == T(project.bookstore.usedbook.entity.RequestStatus).REJECTED}">
+      <th>거절사유</th>
+      <td th:text="${request.rejectReason}"></td>
+    </tr>
+    <tr>
+      <th>신청일</th>
+      <td th:text="${#temporals.format(request.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    <tr th:if="${request.admin != null}">
+      <th>처리자</th>
+      <td th:text="${request.admin.nickname}"></td>
+    </tr>
+  </table>
+
+  <!-- 상태가 PENDING일 때만 승인/거절 버튼 -->
+  <div th:if="${request.status == T(project.bookstore.usedbook.entity.RequestStatus).PENDING}">
+    <form th:action="@{|/admin/request/${request.id}/approve|}" method="post" style="display:inline;">
+      <button type="submit">승인</button>
+    </form>
+    <button type="button" th:onclick="openRejectModal()">거절</button>
+  </div>
+  <a th:href="@{/admin/request}">목록으로</a>
+
+  <!-- 거절사유 입력 모달 -->
+  <div id="rejectModal" style="display:none; position:fixed; left:50%; top:40%; transform:translate(-50%,-50%); background:#fff; border:1px solid #ccc; padding:20px; z-index:1000;">
+    <label>거절 사유:</label>
+    <input type="text" id="rejectReasonInput" style="width:250px;">
+    <button id="rejectConfirmBtn">거절하기</button>
+    <button type="button" onclick="closeRejectModal()">닫기</button>
+  </div>
+
+  <!-- 배경 흐림/클릭 방지용 (optional) -->
+  <div id="modalBackdrop" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:999;"></div>
+
+  <!-- jQuery + 모달/거절 AJAX -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script>
+    //CSRF 토큰 세팅
+    $(function () {
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
+      $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+      });
+    });
+
+    let currentRequestId = [[${request.id}]];
+
+    function openRejectModal() { //배경에서 거절버튼 눌렀을 때
+      $('#rejectReasonInput').val(''); //거절사유 공란으로 세팅
+      $('#modalBackdrop').show();//배경효과
+      $('#rejectModal').show();//모달 띄우기
+    }
+
+    $('#rejectConfirmBtn').on('click', function () {
+      const rejectReason = $('#rejectReasonInput').val().trim();
+      if (!rejectReason) {
+        alert('거절 사유를 입력하세요.');
+        return;
+      }
+      $.ajax({
+        url: '/admin/request/' + currentRequestId + '/reject',
+        method: 'POST',
+        data: { rejectreason: rejectReason },
+        success: function (res) {
+          alert('거절 처리 완료!');
+          $('#rejectModal').hide();
+          $('#modalBackdrop').hide();
+          window.location.href = '/admin/request'; // 목록으로 이동
+        },
+        error: function (xhr) {
+          alert('에러: ' + xhr.responseText);
+        }
+      });
+    });
+
+    // 모달 바깥 클릭 시 닫기 (optional)
+    $('#modalBackdrop').on('click', function () {
+      $('#rejectModal').hide();
+      $('#modalBackdrop').hide();
+    });
+
+    function closeRejectModal(){
+      $('#rejectModal').hide();
+      $('#modalBackdrop').hide();
+    }
+  </script>
+</body>
+</html>

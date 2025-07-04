@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오류 안내</title>
+</head>
+<body>
+<h2 style="color: red">오류 알림</h2>
+<div th:if="${message}">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        alert([[${message}]]);
+        /*]]>*/
+    </script>
+    <p th:text="${message}"></p>
+</div>
+<a href="/main" style="color:blue;">메인으로</a>
+<a href="javascript:history.back()">이전 페이지</a>
+</body>
+</html>

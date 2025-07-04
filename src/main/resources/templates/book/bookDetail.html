@@ -15,8 +15,9 @@
     <!--주문하기버튼-->
     <form th:action="@{/cart/add}" method="post">
         <input type="hidden" name="bookId" th:value="${book.id}"/>
-        <button type="submit">장바구니에 담기</button>
+        <button type="submit" th:disabled="${book.stockQuantity == 0}">장바구니에 담기</button>
     </form>
+    <div th:if="${book.stockQuantity == 0}" style="color: red">품절되었습니다.</div>
 
     <div>
         <a th:href="@{/books}">책 목록으로 돌아가기</a>

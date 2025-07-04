@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.bookstore.book.entity.Book;
 import project.bookstore.global.config.BaseEntity;
+import project.bookstore.usedbook.entity.UsedBook;
 
 @Entity
 @Getter
@@ -23,12 +24,26 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book;//어떤 책을 담았는지
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usedbook_id")
+    private UsedBook usedBook;//어떤 책을 담았는지
+
     private int count;//수량
 
+    //신간
     public CartItem(Cart cart, Book book, int count) {
         this.cart = cart;
         this.book = book;
         this.count = count;
+        this.usedBook = null;
+    }
+
+    //중고책
+    public CartItem(Cart cart, UsedBook usedBook, int count) {
+        this.cart = cart;
+        this.usedBook = usedBook;
+        this.count = count;
+        this.book = null;
     }
 
     //수량 변경 로직

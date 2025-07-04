@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.bookstore.book.entity.Book;
 import project.bookstore.global.config.BaseEntity;
+import project.bookstore.usedbook.entity.UsedBook;
 
 @Entity
 @Getter
@@ -23,21 +24,40 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "book_id")
     private Book book; //어떤 책을 주문했는지
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usedbook_id")
+    private UsedBook usedBook;//어떤 중고책을 담았는지
+
     private int orderPrice; //주문금액
 
     private int count; //주문 수량
 
     //생성 메서드
-    public static OrderItem createOrderItem(Book book, int orderPrice, int count) {
+    public static OrderItem createOrderItem(Book book, UsedBook usedBook,int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();
         orderItem.book = book;
+        orderItem.usedBook = usedBook;
         orderItem.orderPrice = orderPrice;
         orderItem.count =count;
-        book.removeStock(count);
+        if (book != null) {
+            book.removeStock(count);
+        }
+        if (usedBook != null) {
+            usedBook.markSold();
+        }
 
         return orderItem;
     }
 
+    //신간용
+    public static OrderItem createOrderItem(Book book, int orderPrice, int count) {
+        return createOrderItem(book, null, orderPrice, count);
+    }
+
+    //중고용
+    public static OrderItem createOrderItem(UsedBook usedBook, int orderPrice, int count) {
+        return createOrderItem(null, usedBook, orderPrice, count);
+    }
     public void addOrder(Order order) {
         this.order = order;
     }
@@ -48,6 +68,11 @@ public class OrderItem extends BaseEntity {
     }
 
     public void cancel(){
-        book.addStork(count);
+        if(book != null) {//신간은 재고복구
+            book.addStork(count);
+        }
+        if (usedBook != null) {//중고는 상태복구
+            usedBook.markForSale();
+        }
     }
 }

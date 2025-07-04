@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고책 전체 목록</title>
+</head>
+<body>
+    <h1>중고책 전체 목록</h1>
+
+    <!-- 검색 폼 -->
+    <form th:action="@{/used/list}" method="get">
+        <label>책 제목 : <input type="text" name="title" placeholder="제목 검색" th:value="${condition.title}"></label>
+        <label>상태 : <select name="status">
+            <option value="" selected hidden>전체 상태</option>
+            <option th:each="stat : ${T(project.bookstore.usedbook.entity.UsedStatus).values()}"
+                    th:value="${stat}" th:text="${stat}" th:selected="${condition.status} == ${stat}">
+            </option>
+        </select>
+        </label>
+        <button type="submit">검색</button>
+    </form>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>저자</th>
+            <th>가격</th>
+            <th>상태</th>
+            <th>등록일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book, stat : ${usedBooks}">
+            <td><a th:href="@{'/used/' + ${book.id}}" th:text="${stat.count}"></a></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.price}"></td>
+            <td th:text="${book.status}"></td>
+            <td th:text="${#temporals.format(book.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        <tr th:if="${usedBooks.isEmpty()}">
+            <td colspan="7" style="text-align:center;">조회 결과가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+<a href="/main">메인으로</a>
+</body>
+</html>
