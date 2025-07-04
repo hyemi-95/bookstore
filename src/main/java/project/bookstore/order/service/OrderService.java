@@ -83,8 +83,21 @@ public class OrderService {
             List<OrderItemDto> items = new ArrayList<>();
             
             for (OrderItem item : order.getOrderItems()) {
+                String title;
+                String bookType;
+                if (item.getBook() != null) {
+                    title =item.getBook().getTitle();
+                    bookType = "NEW";
+                } else if (item.getUsedBook() != null) {
+                    title = item.getUsedBook().getTitle();
+                    bookType = "USED";
+                } else {
+                    title ="알수업음";
+                    bookType = "";
+                }
                 items.add(new OrderItemDto(
-                        item.getBook().getTitle(),
+                        title,
+                        bookType,
                         item.getOrderPrice(),
                         item.getCount()
                 ));
@@ -129,6 +142,10 @@ public class OrderService {
 
         //배송정보 생성
         Delivery delivery = new Delivery(receiver,address,phone);
+
+        //주문에 따른 첫 기본정보 이력 추가
+        DeliveryStatusHistory history = new DeliveryStatusHistory(delivery, null, DeliveryStatus.READY, member);
+        historyRepository.save(history);
         //주문 생성
         Order order = Order.createOrder(member, orderItems, delivery);//해당 메서드에서 양방향 메서드를 호출(Order내부에 주문 항목 추가(이떄 Order와 양방향이 연결됨)
 ;

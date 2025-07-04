@@ -13,8 +13,9 @@ public class OrderItemDto {
 
     private int totalPrice; //상품별 합계
 
-    public OrderItemDto(String bookTitle, int orderPrice, int count) {
+    public OrderItemDto(String bookTitle, String bookType, int orderPrice, int count) {
         this.bookTitle = bookTitle;
+        this.bookType = bookType;
         this.orderPrice = orderPrice;
         this.count = count;
         this.totalPrice = orderPrice * count;
