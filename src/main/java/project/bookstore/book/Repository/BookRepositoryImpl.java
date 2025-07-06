@@ -41,12 +41,12 @@ public class BookRepositoryImpl implements BookRepositoyCustom{
                 .orderBy(book.id.desc())
                 .fetch();
 
-        long total = queryFactory.
+        Long total = queryFactory.
                 select(book.count())
                 .from(book)
                 .where(builder)
                 .fetchOne();
 
-        return new PageImpl<>(content,pageable, total);
+        return new PageImpl<>(content,pageable, total != null ? total : 0L);
     }
 }

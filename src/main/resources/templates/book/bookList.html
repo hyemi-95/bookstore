@@ -55,18 +55,19 @@
 
     <!--페이징-->
     <div>
-        <!--이전페이지 (첫페이지가 아닐 경우만) -->
+        <!-- 이전 -->
         <span th:if="${page.hasPrevious()}">
-            <a th:href="@{/books(page=${page.number -1}, keyword=${condition.keyword}, isUsed=${condition.isUsed})}">이전</a>
-        </span>
-
-        <!--현재 페이지 번호 / 전체 페이지 수-->
-        <span th:text="${page.number + 1}">1</span> / <span th:text="${page.totalPages}">1</span>
-
-        <!--다음 페이지 (마지막페이지가 아닐 경우) -->
+        <a th:href="@{/books(page=${page.number-1},keyword=${condition.keyword},isUsed=${condition.isUsed})}">이전</a>
+    </span>
+        <!-- 번호 -->
+        <span th:each="pageNum : ${#numbers.sequence(0, (page.totalPages-1))}" th:classappend="${pageNum==page.number} ? 'active'">
+        <a th:href="@{/books(page=${pageNum},keyword=${condition.keyword},isUsed=${condition.isUsed})}" th:text="${pageNum+1}">1</a>
+    </span>
+        <!-- 다음 -->
         <span th:if="${page.hasNext()}">
-            <a th:href="@{/books(page=${page.number +1}, keyword=${condition.keyword}, isUsed=${condition.isUsed})}">다음</a>
-        </span>
+        <a th:href="@{/books(page=${page.number+1},keyword=${condition.keyword},isUsed=${condition.isUsed})}">다음</a>
+    </span>
     </div>
+
 </body>
 </html>

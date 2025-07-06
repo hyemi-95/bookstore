@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <title>게시글 상세</title>
+    <link rel="stylesheet" th:href="@{/css/form-table.css}">
+    <style>
+        .btn-area { margin-top: 18px; text-align: right; }
+        .btn-area a, .btn-area form { display: inline-block; margin-left: 8px; }
+        .file-list { margin-top: 6px; font-size: 0.95em; }
+        .file-list a { margin-right: 8px; }
+        .comment-area { margin-top: 28px; border-top: 1px solid #eee; padding-top: 12px;}
+        .alert-success {color: seagreen;}
+        .alert-error {color: crimson;}
+    </style>
+</head>
+<body>
+    <h2>게시글 상세</h2>
+    <table class="form-table">
+        <tr>
+            <th>제목</th>
+            <td th:text="${board.title}">제목</td>
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td th:text="${board.writerNickName}">작성자</td>
+        </tr>
+        <tr>
+            <th>작성일</th>
+            <td th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        <tr th:if="${board.modifiedDate != null}">
+            <th>수정일</th>
+            <td th:text="${#temporals.format(board.modifiedDate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td th:text="${board.content}" style="min-height: 120px; white-space: pre-line;">게시글 내용</td>
+        </tr>
+        <tr>
+            <th>첨부파일</th>
+            <td>
+                <div class="file-list">
+                    <span th:if="${#lists.isEmpty(board.files)}">-</span>
+                    <span th:each="file : ${board.files}">
+                <a th:href="@{/board/file/{id}/download(id=${file.id})}" th:text="${file.originalFileName}" download></a>
+              </span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="btn-area">
+        <a th:href="@{/board}" class="btn">목록</a>
+        <a th:href="@{/board/{id}/edit(id=${board.id})}" class="btn">수정</a>
+        <form th:action="@{/board/{id}/delete(id=${board.id})}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+        </form>
+    </div>
+
+    <!-- 댓글 영역(Ajax로 구현) -->
+    <div class="comment-area">
+        <h3>댓글</h3>
+        <!-- 댓글 목록 -->
+        <div id="commentList"></div>
+        <!-- 댓글 등록 폼 -->
+        <div id="commentForm">
+            <textarea id="commentContent" rows="3" style="width:92%;" placeholder="댓글을 입력하세요"></textarea>
+            <button type="button" id="commentAddBtn">등록</button>
+        </div>
+        <!-- 에러/알림 영역 -->
+        <div id="commentAlert" style="margin-top:5px;"></div>
+    </div>
+    <script>
+        var BOARD_ID = [[${board.id}]];
+        var CSRF_TOKEN = "[[${_csrf.token}]]";
+        var CSRF_HEADER = "[[${_csrf.headerName}]]";
+    </script>
+    <script th:src="@{/js/boardComment.js}"></script>
+</body>
+</html>

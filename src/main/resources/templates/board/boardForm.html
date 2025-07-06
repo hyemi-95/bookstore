@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>게시글 등록</title>
+  <link rel="stylesheet" th:href="@{/css/form-table.css}">
+</head>
+<body>
+<h2>게시글 등록</h2>
+<form th:action="@{/board/new}" th:object="${boardSaveDto}" method="post" enctype="multipart/form-data">
+  <table class="form-table">
+    <tr>
+      <th>제목</th>
+      <td>
+        <input type="text" th:field="*{title}" required style="width:98%;">
+      </td>
+    </tr>
+    <tr>
+      <th>작성자</th>
+      <td>
+        <input type="text" th:value="${nickname}" readonly style="background:#f9f9f9;">
+      </td>
+    </tr>
+    <tr>
+      <th>내용</th>
+      <td>
+        <textarea th:field="*{content}" rows="7" style="width:98%;" required></textarea>
+      </td>
+    </tr>
+    <tr>
+      <th>첨부파일</th>
+      <td>
+        <input type="file" name="files" multiple>
+        <span style="font-size: 0.95em; color: #888;">(여러 개 선택 가능)</span>
+      </td>
+    </tr>
+  </table>
+  <div style="margin-top:15px;">
+    <button type="submit">등록</button>
+    <a th:href="@{/board}" style="margin-left:10px;">취소</a>
+  </div>
+</form>
+</body>
+</html>

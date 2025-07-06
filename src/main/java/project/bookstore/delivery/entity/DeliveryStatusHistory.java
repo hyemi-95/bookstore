@@ -34,4 +34,18 @@ public class DeliveryStatusHistory extends BaseEntity {
         this.afterStatus = afterStatus;
         this.changer = changer;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DeliveryStatusHistory deliveryStatusHistory = (DeliveryStatusHistory) o;
+        return id != null && id.equals(deliveryStatusHistory.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }

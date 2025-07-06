@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>게시판 목록</title>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+  <h2>게시판 목록</h2>
+
+  <!-- 검색 폼 -->
+  <form th:action="@{/board}" method="get" style="margin-bottom: 20px;">
+    <input type="text" name="keyword" th:value="${condition.keyword}" placeholder="제목/내용"/>
+    <input type="text" name="writerNickname" th:value="${condition.writerNickname}" placeholder="작성자"/>
+    <button type="submit">검색</button>
+    <a th:href="@{/board}">초기화</a>
+  </form>
+
+  <!-- 글쓰기 버튼 -->
+  <a th:href="@{/board/new}" class="btn">글쓰기</a>
+
+  <!-- 게시글 테이블 -->
+  <table border="1" cellpadding="8">
+    <thead>
+    <tr>
+      <th>순번</th>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>작성일</th>
+      <th>첨부</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr th:if="${boards.content.size() == 0}">
+        <td colspan="5" style="text-align: center;">게시글이 없습니다.</td>
+      </tr>
+      <tr th:each="board, iterStat : ${boards.content}">
+        <!-- 순번: 페이징 고려(총글수-현재row-페이지처리) -->
+        <!--전체 게시글 개수 - (현재 페이지번호 *한페이지에 표시할 게시글 개수) - 한복문의 현재 인덱스 -->
+        <!--첫 번째 행: 103 - (1*10) - 0 = 93 / 두 번째 행: 103 - (1*10) - 1 = 92...-->
+        <td th:text="${boards.totalElements - (boards.number * boards.size) - iterStat.index}"></td>
+        <!-- 제목: 상세화면 이동 링크 -->
+        <td>
+          <a th:href="@{|/board/${board.id}|}" th:text="${board.title}"></a>
+        </td>
+        <td th:text="${board.writerNickName}"></td>
+        <td th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <!-- 첨부파일 표시 (있으면 'O', 없으면 '-') -->
+        <td th:text="${#lists.isEmpty(board.files) ? '-' : 'O'}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이징 처리 -->
+  <div>
+    <span th:if="${boards.hasPrevious()}">
+        <a th:href="@{/board(page=${boards.number-1},keyword=${condition.keyword})}">이전</a>
+    </span>
+    <span th:each="pageNum : ${#numbers.sequence(0,(boards.totalPages-1))}" th:classappend="${pageNum==boards.number} ? 'active'">
+        <a th:href="@{/board(page=${pageNum},keyword=${condition.keyword})}" th:text="${pageNum+1}">1</a>
+    </span>
+    <span th:if="${boards.hasNext()}">
+        <a th:href="@{/board(page=${boards.number+1},keyword=${condition.keyword})}">다음</a>
+    </span>
+  </div>
+
+</body>
+</html>

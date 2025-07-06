@@ -75,4 +75,17 @@ public class UsedBookRequest extends BaseEntity { //중고책 판매 신청
         this.isbn = isbn;
         this.description = description;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsedBookRequest usedBookRequest = (UsedBookRequest) o;
+        return id != null && id.equals(usedBookRequest.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

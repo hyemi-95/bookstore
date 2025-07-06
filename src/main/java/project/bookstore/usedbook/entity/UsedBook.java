@@ -54,4 +54,17 @@ public class UsedBook extends BaseEntity { //중고책 실물 데이터
         this.status = UsedStatus.FOR_SALE;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsedBook usedBook = (UsedBook) o;
+        return id != null && id.equals(usedBook.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }

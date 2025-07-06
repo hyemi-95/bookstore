@@ -40,4 +40,18 @@ public class Delivery extends BaseEntity {
     public void changeStatus(DeliveryStatus newStatus) {
         this.status = newStatus;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Delivery delivery = (Delivery) o;
+        return id != null && id.equals(delivery.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }
