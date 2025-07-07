@@ -79,6 +79,20 @@ public class AdminController { // 관리자 홈, 회원관리, 게시판관리, 
         }
     }
 
+    // 계정정지 (비동기, JSON)
+    @PostMapping("members/{id}/restore")
+    @ResponseBody
+    public ResponseEntity<?> restoreMember(@PathVariable Long id) {
+        try {
+            memberService.restoreMember(id);
+            // 별도 MemberSuspendHistory 저장하려면 여기서 호출
+            // memberSuspendHistoryService.saveHistory(id, reason, ...)
+            return ResponseEntity.ok().build();
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("에러: " + e.getMessage());
+        }
+    }
+
     //게시글관리
     @GetMapping("/boards")
     public String adminBoardList(@ModelAttribute BoardSearchCondition condition,

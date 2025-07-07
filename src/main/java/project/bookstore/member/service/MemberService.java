@@ -10,7 +10,10 @@ import project.bookstore.member.dto.MemberListDto;
 import project.bookstore.member.dto.MemberSearchCondition;
 import project.bookstore.member.dto.SignupForm;
 import project.bookstore.member.entity.Member;
+import project.bookstore.member.entity.MemberSuspendHistory;
+import project.bookstore.member.entity.MemberHistoryType;
 import project.bookstore.member.repository.MemberRepository;
+import project.bookstore.member.repository.MemberSuspendHistoryRepository;
 
 import java.util.List;
 
@@ -21,6 +24,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder; // 비밀번호 암호화용 SecufityConfig에 등록 되어있음
+
+    private final MemberSuspendHistoryRepository memberSuspendHistoryRepository;
 
     /***
      * 회원가입 처리 메서드
@@ -64,5 +69,19 @@ public class MemberService {
     public void suspendMember(Long id, String suspendReason) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
         member.suspend(suspendReason); //계정정지
+
+        //이력 저장
+        MemberSuspendHistory history = new MemberSuspendHistory(member, suspendReason, MemberHistoryType.SUSPEND);
+        memberSuspendHistoryRepository.save(history);
     }
+
+    public void restoreMember(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        member.restore();
+
+        //이력 저장
+        MemberSuspendHistory history = new MemberSuspendHistory(member, null, MemberHistoryType.RESTORE);
+        memberSuspendHistoryRepository.save(history);
+    }
+
 }

@@ -37,6 +37,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Order> order = new ArrayList<>();//주문 상품들
 
+    @OneToMany(mappedBy = "member" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberSuspendHistory> suspendHistories = new ArrayList<>();//회원 정지 이력
+
+
     public Member(String email, String password, String nickname, Role role) {
         this.email = email;
         this.password = password;
@@ -56,9 +60,16 @@ public class Member extends BaseEntity {
         return this.role == Role.ADMIN || this.role == Role.SELLER;
     }
 
+    //계정정지
     public void suspend(String suspendReason) {
         this.status = MemberStatus.SUSPENDED;
         this.suspendReason = suspendReason;
+    }
+
+    //계정해제
+    public void restore() {
+        this.status = MemberStatus.NOMAL;
+        this.suspendReason = null;
     }
 
     @Override
