@@ -13,6 +13,7 @@
       <th>제목</th>
       <td>
         <input type="text" th:field="*{title}" required style="width:98%;">
+        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="field-error"></div>
       </td>
     </tr>
     <tr>
@@ -25,6 +26,7 @@
       <th>내용</th>
       <td>
         <textarea th:field="*{content}" rows="7" style="width:98%;" required></textarea>
+        <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="field-error"></div>
       </td>
     </tr>
     <tr>
