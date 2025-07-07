@@ -38,6 +38,7 @@
             <td th:text="${book.author}"></td>
             <td th:text="${book.price}"></td>
             <td th:text="${book.status}"></td>
+
             <td th:text="${#temporals.format(book.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         <tr th:if="${usedBooks.isEmpty()}">

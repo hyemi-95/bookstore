@@ -1,0 +1,26 @@
+<!-- src/main/resources/templates/fragments/pagination.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pagination Fragment</title>
+</head>
+<body>
+<!-- fragment: pagination -->
+<div th:fragment="pagination(page)">
+    <div class="pagination">
+        <ul>
+            <li th:if="${page.hasPrevious()}">
+                <a th:href="@{__${page.pageable.previousOrFirst.pageNumber}__}" th:text="'이전'"></a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                th:classappend="${page.number == i} ? 'active'">
+                <a th:href="@{__${i}__}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${page.hasNext()}">
+                <a th:href="@{__${page.pageable.next.pageNumber}__}" th:text="'다음'"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

@@ -7,6 +7,7 @@
   <title>판매신청 상세</title>
 </head>
 <body>
+<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
   <h1>중고책 판매신청 상세 (관리자)</h1>
   <table border="1">
     <tr>
@@ -35,7 +36,7 @@
     </tr>
     <tr>
       <th>판매자</th>
-      <td th:text="${request.seller.nickname}"></td>
+      <td th:text="${request.sellerNickname}"></td>
     </tr>
     <tr>
       <th>신청상태</th>
@@ -49,9 +50,9 @@
       <th>신청일</th>
       <td th:text="${#temporals.format(request.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
     </tr>
-    <tr th:if="${request.admin != null}">
+    <tr th:if="${request.adminNickname != null}">
       <th>처리자</th>
-      <td th:text="${request.admin.nickname}"></td>
+      <td th:text="${request.adminNickname}"></td>
     </tr>
   </table>
 

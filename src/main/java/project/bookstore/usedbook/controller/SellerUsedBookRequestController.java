@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import project.bookstore.global.dto.ResultDto;
 import project.bookstore.member.entity.Member;
 import project.bookstore.member.security.CustomUserDetails;
+import project.bookstore.usedbook.dto.UsedBookRequestDetailDto;
+import project.bookstore.usedbook.dto.UsedBookRequestDto;
 import project.bookstore.usedbook.dto.UsedBookRequestForm;
 import project.bookstore.usedbook.entity.RequestStatus;
 import project.bookstore.usedbook.entity.UsedBookRequest;
@@ -85,9 +87,9 @@ public class SellerUsedBookRequestController {//판매자용
      */
     @GetMapping("my/{id}")
     public String myRequestDetail(@PathVariable Long id, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        UsedBookRequest request = usedBookRequestService.findById(id);
+        UsedBookRequestDetailDto request = usedBookRequestService.findById(id);
         //퀀한 체크
-        if (!request.getSeller().getId().equals(userDetails.getMember().getId())) {
+        if (!request.getSellerId().equals(userDetails.getMember().getId())) {
             return "error/403";
         }
         model.addAttribute("request", request);
@@ -103,9 +105,9 @@ public class SellerUsedBookRequestController {//판매자용
      */
     @GetMapping("/my/{id}/edit")
     public String editRequestForm(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        UsedBookRequest request = usedBookRequestService.findById(id);
+        UsedBookRequestDetailDto request = usedBookRequestService.findById(id);
         //본인 상태 확인
-        if (!request.getSeller().getId().equals(userDetails.getMember().getId())) {
+        if (!request.getSellerId().equals(userDetails.getMember().getId())) {
             return "error/403";
         }
         if(request.getStatus() != RequestStatus.PENDING){

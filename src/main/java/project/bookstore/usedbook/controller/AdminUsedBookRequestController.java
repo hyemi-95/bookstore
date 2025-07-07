@@ -6,7 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.bookstore.member.security.CustomUserDetails;
-import project.bookstore.usedbook.entity.UsedBookRequest;
+import project.bookstore.usedbook.dto.UsedBookRequestDetailDto;
+import project.bookstore.usedbook.dto.UsedBookRequestDto;
 import project.bookstore.usedbook.service.UsedBookRequestService;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class AdminUsedBookRequestController {//관리자용
     // 전체 목록
     @GetMapping
     public String requestList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<UsedBookRequest> requests = usedBookRequestService.findAll();
+        List<UsedBookRequestDto> requests = usedBookRequestService.findAll();
         model.addAttribute("requests", requests);
         return "admin/usedBookRequestList";
     }
@@ -29,7 +30,7 @@ public class AdminUsedBookRequestController {//관리자용
     // 상세 보기
     @GetMapping("/{id}")
     public String requestDetail(@PathVariable Long id, Model model) {
-        UsedBookRequest request = usedBookRequestService.findById(id);
+        UsedBookRequestDetailDto request = usedBookRequestService.findById(id);
         model.addAttribute("request", request);
         return "admin/usedBookRequestDetail";
     }
@@ -40,13 +41,6 @@ public class AdminUsedBookRequestController {//관리자용
         usedBookRequestService.approveRequest(id, userDetails.getMember());
         return "redirect:/admin/request";
     }
-
-    // 거절 폼
-//    @GetMapping("/{id}/reject")
-//    public String rejectForm(@PathVariable Long id, Model model) {
-//        model.addAttribute("requestId",id);
-//        return "admin/rejectUsedBookRequestForm";
-//    }
 
     // 거절 처리
     @PostMapping("/{id}/reject")

@@ -22,6 +22,7 @@ public class FileService {
 
     //허용 확장자 목록(보안)
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "pdf", "txt", "zip", "docx", "xlsx");
+    private  static  final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     // 파일 저장
     public String saveFile(MultipartFile file) {
@@ -32,6 +33,10 @@ public class FileService {
 
         if (originalFileName == null || originalFileName.isBlank()) {
             throw new IllegalArgumentException("업로드 파일명이 비어있습니다.");
+        }
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException("파일 크기는 10MB 이하만 가능합니다.");
         }
 
         //확장자 체크(보안)

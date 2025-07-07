@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>관리자 - 신책 관리</title>
+    <link rel="stylesheet" th:href="@{/css/form-table.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
+<h2>신책 관리</h2>
+<form class="search-form" method="get" th:action="@{/admin/books}">
+    <label>책 제목 : <input type="text" name="title" th:value="${condition.keyword}" placeholder="책 제목"></label>
+    <button type="submit">검색</button>
+</form>
+<table class="form-table">
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>저자</th>
+        <th>가격</th>
+        <th>등록일</th>
+        <th>상세/관리</th>
+    </tr>
+    <tr th:each="book, idx : ${books}">
+        <td th:text="${page.totalElements - (page.number * page.size) - idx.index}"></td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.price}"></td>
+        <td th:text="${#temporals.format(book.createdDate, 'yyyy-MM-dd')}"></td>
+        <td>
+            <a th:href="@{|/books/${book.id}|}">상세</a>
+        </td>
+    </tr>
+</table>
+<div class="page-btns" th:replace="~{fragments/pagination :: pagination(page=${page})}"></div>
+</body>
+</html>

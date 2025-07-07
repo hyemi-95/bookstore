@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.global.dto.ResultDto;
 import project.bookstore.member.entity.Member;
+import project.bookstore.usedbook.dto.UsedBookRequestDetailDto;
+import project.bookstore.usedbook.dto.UsedBookRequestDto;
 import project.bookstore.usedbook.dto.UsedBookRequestForm;
 import project.bookstore.usedbook.entity.RequestStatus;
 import project.bookstore.usedbook.entity.UsedBook;
@@ -14,6 +16,7 @@ import project.bookstore.usedbook.repository.UsedBookRepository;
 import project.bookstore.usedbook.repository.UsedBookRequestRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +50,9 @@ public class UsedBookRequestService {//중고책 판매 신청
     /**
      * 관리자 : 전체 신청 내역
      */
-    public List<UsedBookRequest> findAll() {
-        return requestRepository.findAll();
+    public List<UsedBookRequestDto> findAll() {
+        List<UsedBookRequest> usedBookRequests = requestRepository.findAll();
+        return usedBookRequests.stream().map(r -> UsedBookRequestDto.from(r)).collect(Collectors.toList());
     }
 
     /**
@@ -84,8 +88,9 @@ public class UsedBookRequestService {//중고책 판매 신청
     /**
      * 개별 신청 상세 조회
      */
-    public UsedBookRequest findById(Long id) {
-        return getUsedBookRequestOrThrow(id);
+    public UsedBookRequestDetailDto findById(Long id) {
+        UsedBookRequest usedBookRequest = getUsedBookRequestOrThrow(id);
+        return UsedBookRequestDetailDto.from(usedBookRequest);
     }
 
     @Transactional

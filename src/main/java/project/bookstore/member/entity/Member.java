@@ -29,6 +29,11 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private MemberStatus status = MemberStatus.NOMAL;//현재 상태
+
+    private String suspendReason;//정지 사유
+
     @OneToMany(mappedBy = "member")
     private List<Order> order = new ArrayList<>();//주문 상품들
 
@@ -49,6 +54,11 @@ public class Member extends BaseEntity {
 
     public boolean isAdminOrSeller(){
         return this.role == Role.ADMIN || this.role == Role.SELLER;
+    }
+
+    public void suspend(String suspendReason) {
+        this.status = MemberStatus.SUSPENDED;
+        this.suspendReason = suspendReason;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class BookRepositoryImpl implements BookRepositoyCustom{
         //동적 조건
         BooleanBuilder builder = new BooleanBuilder();
         if (condition.getKeyword() != null && !condition.getKeyword().isBlank()) {
-            builder.and(book.title.containsIgnoreCase(condition.getKeyword()));
+            builder.and(book.title.containsIgnoreCase(condition.getKeyword())).or(book.author.containsIgnoreCase(condition.getKeyword()));
         }
 
         if (condition.getIsUsed() != null) {

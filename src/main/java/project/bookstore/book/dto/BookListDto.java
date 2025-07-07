@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import project.bookstore.book.entity.Book;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
 public class BookListDto { //목록 조회용
 
@@ -17,6 +19,8 @@ public class BookListDto { //목록 조회용
 
     private String description; // 책 내용
 
+    private LocalDateTime createdDate;
+
     public BookListDto(Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
@@ -24,5 +28,6 @@ public class BookListDto { //목록 조회용
         this.price = book.getPrice();
         this.isUsed = book.getIsUsed();
         this.description = book.getDescription();
+        this.createdDate = book.getCreatedDate();
     }
 }

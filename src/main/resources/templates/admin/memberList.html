@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>관리자 - 회원관리</title>
+  <link rel="stylesheet" th:href="@{/css/form-table.css}">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <style>
+    .search-form { margin-bottom: 18px; }
+    .page-btns { margin-top: 10px; }
+    .field-error { color: crimson; font-size: 0.93em; }
+    .suspended-row .status-cell { color: crimson !important; font-weight: bold; }
+    .suspended-row .suspend-btn { background: #eee; color: #bbb; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
+<h2>회원 관리</h2>
+<!-- 검색 폼 -->
+<form class="search-form" method="get" th:action="@{/admin/members}">
+  <label>이메일 : <input type="text" name="email" th:value="${condition.email}" placeholder="이메일"></label>
+  <label>닉네임 : <input type="text" name="nickname" th:value="${condition.nickname}" placeholder="닉네임"></label>
+  <label>권한 :
+    <select name="role">
+      <option value="">전체</option>
+      <option value="ADMIN" th:selected="${condition.role == 'ADMIN'}">관리자</option>
+      <option value="USER" th:selected="${condition.role == 'USER'}">일반회원</option>
+      <option value="SELLER" th:selected="${condition.role == 'SELLER'}">중고책 판매자</option>
+    </select>
+  </label>
+  <label>상태 :
+    <select name="status">
+      <option value="">전체</option>
+      <option value="NOMAL" th:selected="${condition.status == 'NOMAL'}">정상 계정</option>
+      <option value="SUSPENDED" th:selected="${condition.status == 'SUSPENDED'}">정지 계정</option>
+    </select>
+  </label>
+  <button type="submit">검색</button>
+</form>
+
+<table class="form-table">
+  <tr>
+    <th>번호</th>
+    <th>이메일</th>
+    <th>닉네임</th>
+    <th>권한</th>
+    <th>가입일</th>
+    <th>상태</th>
+    <th>관리</th>
+  </tr>
+  <tr th:each="member, idx : ${members}" th:attr="data-member-id=${member.id}"
+      th:classappend="${member.status.name() == 'SUSPENDED'} ? 'suspended-row'">
+    <td th:text="${page.totalElements - (page.number * page.size) - idx.index}">1</td>
+    <td th:text="${member.email}"></td>
+    <td th:text="${member.nickname}"></td>
+    <td th:text="${member.role}"></td>
+    <td th:text="${#temporals.format(member.createdDate, 'yyyy-MM-dd')}"></td>
+    <td class="status-cell"
+        th:text="${member.status}"
+        th:attr="data-reason=${member.suspendReason}">
+    </td>
+    <td>
+      <button type="button" class="suspend-btn"
+              th:disabled="${member.status.name() == 'SUSPENDED'}">계정정지</button>
+    </td>
+  </tr>
+</table>
+<!-- 페이지네이션 -->
+<div class="page-btns" th:replace="~{fragments/pagination :: pagination(page=${page})}"></div>
+
+<div id="suspend-popup" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; border:1px solid #aaa; padding:24px; z-index:1000;">
+  <h4>계정 정지 사유 입력</h4>
+  <form id="suspend-form">
+    <input type="hidden" id="suspend-member-id">
+    <label>정지사유 <input type="text" id="suspend-reason" required style="width:200px;"></label>
+    <button type="submit">저장</button>
+    <button type="button" onclick="hideSuspendPopup()">취소</button>
+  </form>
+</div>
+<div id="reason-popup" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; border:1px solid #aaa; padding:24px; z-index:1000;">
+  <h4>정지 사유</h4>
+  <div id="reason-text" style="margin:16px 0;"></div>
+  <button onclick="hideReasonPopup()">닫기</button>
+</div>
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  // CSRF (form, meta 병행)
+  function getCsrfToken() {
+    return $("input[name='_csrf']").val() || $("meta[name='_csrf']").attr("content") || "";
+  }
+  function getCsrfHeader() {
+    return $("meta[name='_csrf_header']").attr("content") || "X-CSRF-TOKEN";
+  }
+
+  // 계정정지 버튼 클릭 → 모달 열기
+  $(document).on('click', '.suspend-btn:not(:disabled)', function () {
+    const memberId = $(this).closest('tr').data('member-id');
+    $('#suspend-member-id').val(memberId);
+    $('#suspend-reason').val('');
+    $('#suspend-popup').show();
+  });
+
+  // 계정정지 모달 닫기
+  function hideSuspendPopup() { $('#suspend-popup').hide(); }
+
+  // 상태 클릭 시 팝업 (무조건 팝업)
+  $(document).on('click', '.status-cell', function () {
+    const reason = $(this).data('reason');
+    $('#reason-text').text(reason ? reason : '정지 사유 없음');
+    $('#reason-popup').show();
+  });
+  function hideReasonPopup() { $('#reason-popup').hide(); }
+
+  // 비동기 계정정지
+  $('#suspend-form').on('submit', function (e) {
+    e.preventDefault();
+    const memberId = $('#suspend-member-id').val();
+    const reason = $('#suspend-reason').val().trim();
+    if(!reason){
+      alert('정지 사유를 입력하세요.');
+      return;
+    }
+
+    const csrf = getCsrfToken();
+    const csrfHeader = getCsrfHeader();
+    $.ajax({
+      url: '/admin/members/' + memberId + '/suspend',
+      type: 'POST',
+      contentType: 'application/json',
+      headers: { [csrfHeader]: csrf },
+      data: JSON.stringify({ reason }),
+      success: function () {
+        const row = $("tr[data-member-id='" + memberId + "']");
+        row.addClass('suspended-row');
+        row.find('.status-cell')
+                .text('SUSPENDED')
+                .css('color', 'crimson')
+                .data('reason', reason);
+        row.find('.suspend-btn').prop('disabled', true);
+        hideSuspendPopup();
+        alert('계정이 정지되었습니다.');
+      },
+      error: function () {
+        alert('에러! 관리자에게 문의');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

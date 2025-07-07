@@ -1,9 +1,12 @@
 package project.bookstore.usedbook.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.member.entity.Member;
+import project.bookstore.usedbook.dto.UsedBookListDto;
 import project.bookstore.usedbook.dto.UsedBookSearchCondition;
 import project.bookstore.usedbook.entity.UsedBook;
 import project.bookstore.usedbook.entity.UsedStatus;
@@ -18,16 +21,18 @@ public class UsedbookService {//중고책 관리 / 조회
     private final UsedBookRepository usedBookRepository;
 
     private UsedBook getUsedBookOrThrow(Long id) {
-        return usedBookRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("중고책이 없습니다."));
+        return usedBookRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("중고책이 없습니다."));
     }
 
     /**
      * 조건 검색기능
+     *
      * @param condition
      * @return
      */
-    public List<UsedBook> searchUsedBook(UsedBookSearchCondition condition) {
-        return usedBookRepository.searchUsedBook(condition);
+    public Page<UsedBookListDto> searchUsedBook(UsedBookSearchCondition condition, Pageable pageable) {
+        Page<UsedBook> usedBooks = usedBookRepository.searchUsedBook(condition, pageable);
+        return usedBooks.map(usedBook -> UsedBookListDto.from(usedBook));
     }
 
     /**

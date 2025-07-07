@@ -40,13 +40,13 @@ public class BoardController {
     public String save(@Valid @ModelAttribute BoardSaveDto dto, BindingResult result,
                        @AuthenticationPrincipal CustomUserDetails userDetails
                         , Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors()) { //필드검증
             model.addAttribute("nickname", userDetails.getMember().getNickname());
             return "board/boardForm";
         }
         try {
             boardService.createBoard(dto, userDetails.getMember());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {//비즈니스 예외
             model.addAttribute("fileError",e.getMessage());
             model.addAttribute("nickname", userDetails.getMember().getNickname());
         }

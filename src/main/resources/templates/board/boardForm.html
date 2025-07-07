@@ -13,7 +13,7 @@
       <th>제목</th>
       <td>
         <input type="text" th:field="*{title}" required style="width:98%;">
-        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="field-error"></div>
+        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="field-error"></div><!--필드 검증-->
       </td>
     </tr>
     <tr>
@@ -33,7 +33,8 @@
       <th>첨부파일</th>
       <td>
         <input type="file" name="files" multiple>
-        <span style="font-size: 0.95em; color: #888;">(여러 개 선택 가능)</span>
+        <span style="font-size: 0.95em; color: #888;">(여러 개 선택 가능, 개별 10MB 이하)</span>
+        <div th:if="${fileError != null}" th:text="${fileError}" class="field-error"></div><!--비즈니스 예외-->
       </td>
     </tr>
   </table>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>관리자 - 게시글관리</title>
+  <link rel="stylesheet" th:href="@{/css/form-table.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
+  <h2>게시글 관리</h2>
+  <form class="search-form" method="get" th:action="@{/admin/boards}">
+    <label>제목/내용 : <input type="text" name="keyword" th:value="${condition.keyword}" placeholder="제목/내용"></label>
+    <label>작성자 : <input type="text" name="writerNickname" th:value="${condition.writerNickname}" placeholder="작성자"></label>
+    <button type="submit">검색</button>
+  </form>
+  <table class="form-table">
+    <tr>
+      <th>번호</th>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>등록일</th>
+      <th>상세/관리</th>
+    </tr>
+    <tr th:each="board, idx : ${boards}">
+      <td th:text="${boards.totalElements - (boards.number * boards.size) - idx.index}"></td>
+      <td th:text="${board.title}"></td>
+      <td th:text="${board.writerNickName}"></td>
+      <td th:text="${#temporals.format(board.createdDate, 'yyyy-MM-dd')}"></td>
+      <td>
+        <a th:href="@{|/board/${board.id}|}">상세</a>
+        <a th:href="@{|/admin/boards/${board.id}/delete|}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+      </td>
+    </tr>
+  </table>
+  <div class="page-btns" th:replace="~{fragments/pagination :: pagination(page=${page})}"></div>
+</body>
+</html>

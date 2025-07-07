@@ -39,20 +39,20 @@
             </tr>
             <tr>
                 <th>판매자</th>
-                <td th:text="${usedBooks.seller.nickname}"></td>
+                <td th:text="${usedBooks.sellerNickname}"></td>
             </tr>
         </table>
         <br>
         <form th:action="@{/cart/add}" method="post">
             <input type="hidden" name="usedBookId" th:value="${usedBooks.id}"/>
-            <button type="submit" th:disabled="${usedBooks.status.name() == 'SOLD'}">장바구니에 담기</button>
+            <button type="submit" th:disabled="${usedBooks.status == 'SOLD'}">장바구니에 담기</button>
         </form>
-        <div th:if="${usedBooks.status.name() == 'SOLD'}" style="color: red">판매 완료된 중고책입니다.</div>
+        <div th:if="${usedBooks.status == 'SOLD'}" style="color: red">판매 완료된 중고책입니다.</div>
         <a th:href="@{/used/list}">목록으로</a>
         <a th:href="@{/main}">메인으로</a>
     </div>
 
-    <div th:if="${book == null}">
+    <div th:if="${usedBooks == null}">
         <p style="color:red;">존재하지 않는 책입니다.</p>
         <a th:href="@{/used/list}">목록으로</a>
     </div>

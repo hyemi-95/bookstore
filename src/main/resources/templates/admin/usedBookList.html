@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>관리자 - 중고책 관리</title>
+  <link rel="stylesheet" th:href="@{/css/form-table.css}">
+</head>
+<body>
+<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
+  <h2>중고책 관리</h2>
+  <form class="search-form" method="get" th:action="@{/admin/used-books}">
+    <label> 책 제목 : <input type="text" name="title" th:value="${condition.title}" placeholder="책 제목"></label>
+    <label> 저자 : <input type="text" name="author" th:value="${condition.author}" placeholder="저자"></label>
+    <label> 판매자 : <input type="text" name="sellerNickname" th:value="${condition.sellerNickname}" placeholder="판매자"></label>
+    <button type="submit">검색</button>
+  </form>
+  <table class="form-table">
+    <tr>
+      <th>번호</th>
+      <th>제목</th>
+      <th>저자</th>
+      <th>가격</th>
+      <th>판매자</th>
+      <th>상태</th>
+      <th>상세/관리</th>
+    </tr>
+    <tr th:each="book, idx : ${usedBooks}">
+      <td th:text="${page.totalElements - (page.number * page.size) - idx.index}"></td>
+      <td th:text="${book.title}"></td>
+      <td th:text="${book.author}"></td>
+      <td th:text="${book.price}"></td>
+      <td th:text="${book.sellerNickname}"></td>
+      <td th:text="${book.status}"></td>
+      <td>
+        <a th:href="@{|/used/${book.id}|}">상세</a>
+      </td>
+    </tr>
+  </table>
+  <div class="page-btns" th:replace="~{fragments/pagination :: pagination(page=${page})}"></div>
+</body>
+</html>

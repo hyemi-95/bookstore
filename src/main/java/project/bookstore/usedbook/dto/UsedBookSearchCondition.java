@@ -8,5 +8,7 @@ import project.bookstore.usedbook.entity.UsedStatus;
 @Setter
 public class UsedBookSearchCondition {
     private String title;
+    private String author;
     private UsedStatus status;
+    private String sellerNickname;
 }
