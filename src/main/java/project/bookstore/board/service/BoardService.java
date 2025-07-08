@@ -30,9 +30,9 @@ public class BoardService {
     private  final FileService fileService;
 
 
-    private Board getBoard(Long id) {
-        return boardRepository.findById(id).orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
-    }
+//    private Board getBoard(Long id) {
+//        return boardRepository.findById(id).orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+//    }
 
     //게시글 등록
     public void createBoard(BoardSaveDto dto, Member writer) {
@@ -108,4 +108,7 @@ public class BoardService {
         return boardRepository.searchBoards(condition, pageable);
     }
 
+    public Board getBoard(Long id) {
+        return boardRepository.findById(id).orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+    }
 }

@@ -33,6 +33,7 @@
       <td th:text="${book.status}"></td>
       <td>
         <a th:href="@{|/used/${book.id}|}">상세</a>
+        <a th:href="@{'/admin/used/delete/'+ ${book.id}}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
       </td>
     </tr>
   </table>

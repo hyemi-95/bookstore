@@ -1,6 +1,8 @@
 package project.bookstore.usedbook.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +23,12 @@ public class AdminUsedBookRequestController {//관리자용
 
     // 전체 목록
     @GetMapping
-    public String requestList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<UsedBookRequestDto> requests = usedBookRequestService.findAll();
-        model.addAttribute("requests", requests);
+    public String requestList(Model model ,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size) {
+        Page<UsedBookRequestDto> requests = usedBookRequestService.findAll(PageRequest.of(page, size));
+        model.addAttribute("requests", requests.getContent());
+        model.addAttribute("page", requests);
         return "admin/usedBookRequestList";
     }
 

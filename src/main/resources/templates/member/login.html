@@ -21,10 +21,8 @@
         <button type="submit">로그인</button>
     </form>
 
-    <!--로그인 실패 메시지-->
-    <div th:if="${param.error}">
-        <p style="color:red;">이메일 또는 비밀번호가 틀렸습니다.</p>
-    </div>
+    <!--로그인 실패 및 잠김 메시지-->
+    <div th:if="${errorMsg}" style="color:crimson;" th:text="${errorMsg}"></div>
     <!--로그아웃 성공 메시지-->
     <div th:if="${param.logout}">
         <p style="color:green;">정상적으로 로그아웃 되었습니다.</p>

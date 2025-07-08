@@ -1,0 +1,60 @@
+#suspend-popup,
+#reason-popup,
+#history-modal {
+    display: none;
+    position: fixed;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 14px;
+    border: 1.5px solid #27417e;
+    min-width: 370px;
+    box-shadow: 0 8px 32px rgba(60,70,120,0.10), 0 2px 8px #27417e25;
+    padding: 32px 36px 24px 36px;
+    z-index: 1001;
+}
+#suspend-popup h4,
+#reason-popup h4,
+#history-modal h4 {
+    margin-bottom: 18px;
+    color: #243366;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+#history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 18px;
+}
+#history-table th, #history-table td {
+    border-bottom: 1px solid #eee;
+    padding: 9px 8px;
+    font-size: 15px;
+    text-align: left;
+}
+#history-table th {
+    color: #27417e;
+    font-weight: bold;
+    background: #f3f6fa;
+}
+#history-table td {
+    color: #222;
+}
+#suspend-popup button,
+#reason-popup button,
+#history-modal button {
+    background: #27417e;
+    color: #fff;
+    padding: 7px 22px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+#suspend-popup button:hover,
+#reason-popup button:hover,
+#history-modal button:hover {
+    background: #456be4;
+}

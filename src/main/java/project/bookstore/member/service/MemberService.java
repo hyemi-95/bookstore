@@ -66,6 +66,7 @@ public class MemberService {
         return members.map(MemberListDto::from);
     }
 
+
     public void suspendMember(Long id, String suspendReason) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
         member.suspend(suspendReason); //계정정지
@@ -82,6 +83,10 @@ public class MemberService {
         //이력 저장
         MemberSuspendHistory history = new MemberSuspendHistory(member, null, MemberHistoryType.RESTORE);
         memberSuspendHistoryRepository.save(history);
+    }
+
+    public List<MemberSuspendHistory> getSuspendHistories(Long memberId) {
+        return memberSuspendHistoryRepository.findByMemberIdOrderByCreatedDateDesc(memberId);
     }
 
 }

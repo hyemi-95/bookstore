@@ -63,4 +63,8 @@ public class UsedbookService {//중고책 관리 / 조회
         return getUsedBookOrThrow(id);
     }
 
+    @Transactional
+    public void delete(Long id) {
+        usedBookRepository.deleteById(id);
+    }
 }

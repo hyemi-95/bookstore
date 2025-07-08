@@ -89,47 +89,47 @@ public class BookController {
         return "book/bookDetail";
     }
 
-    /***
-     * 책 목록 수정
-     * @param id
-     * @param model
-     * @return
-     */
-    @GetMapping("/books/edit/{id}")
-    public String editeForm(@PathVariable Long id, Model model) {
-        Book book = bookService.findById(id);
-        BookForm form = new BookForm();
-
-        form.setTitle(book.getTitle());
-        form.setAuthor(book.getAuthor());
-        form.setPrice(book.getPrice());
-        form.setStockQuantity(book.getStockQuantity());
-        form.setIsUsed(book.getIsUsed());
-        form.setIsbn(book.getIsbn());
-        form.setDescription(book.getDescription());
-
-        model.addAttribute("bookForm", form);
-        model.addAttribute("bookId", id);
-
-        return "book/bookEditForm";
-    }
-
-    //수정 - 업데이트
-    @PostMapping("/books/edit/{id}")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute("bookForm") BookForm form, BindingResult result) {
-        if (result.hasErrors()) {
-            return "book/bookEditForm";
-        }
-
-        bookService.upate(id, form);
-        return "redirect:/books";
-    }
-
-    //삭제
-    @PostMapping("/books/delete/{id}")
-    public String delete(@PathVariable Long id){
-        bookService.delete(id);
-        return "redirect:/books";//목록으로 이동
-    }
+//    /***
+//     * 책 목록 수정
+//     * @param id
+//     * @param model
+//     * @return
+//     */
+//    @GetMapping("/books/edit/{id}")
+//    public String editeForm(@PathVariable Long id, Model model) {
+//        Book book = bookService.findById(id);
+//        BookForm form = new BookForm();
+//
+//        form.setTitle(book.getTitle());
+//        form.setAuthor(book.getAuthor());
+//        form.setPrice(book.getPrice());
+//        form.setStockQuantity(book.getStockQuantity());
+//        form.setIsUsed(book.getIsUsed());
+//        form.setIsbn(book.getIsbn());
+//        form.setDescription(book.getDescription());
+//
+//        model.addAttribute("bookForm", form);
+//        model.addAttribute("bookId", id);
+//
+//        return "book/bookEditForm";
+//    }
+//
+//    //수정 - 업데이트
+//    @PostMapping("/books/edit/{id}")
+//    public String update(@PathVariable Long id, @Valid @ModelAttribute("bookForm") BookForm form, BindingResult result) {
+//        if (result.hasErrors()) {
+//            return "book/bookEditForm";
+//        }
+//
+//        bookService.upate(id, form);
+//        return "redirect:/books";
+//    }
+//
+//    //삭제
+//    @PostMapping("/books/delete/{id}")
+//    public String delete(@PathVariable Long id){
+//        bookService.delete(id);
+//        return "redirect:/books";//목록으로 이동
+//    }
 
 }

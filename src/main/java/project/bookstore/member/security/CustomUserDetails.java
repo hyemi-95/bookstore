@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import project.bookstore.member.entity.Member;
+import project.bookstore.member.entity.MemberStatus;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -38,8 +39,8 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true; // 계정 잠김 여부: true = 사용 가능
+    public boolean isAccountNonLocked() {//로그인 제한
+        return member.getStatus() != MemberStatus.SUSPENDED; // 계정 잠김 여부: true = 사용 가능
     }
 
     @Override

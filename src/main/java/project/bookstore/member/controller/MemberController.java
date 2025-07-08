@@ -1,7 +1,12 @@
 package project.bookstore.member.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -54,7 +59,23 @@ public class MemberController {
 
     //로그인
     @GetMapping("/login")
-    public String loginForm() {
+    public String loginForm(HttpServletRequest request, Model model) {
+        // 로그인 실패 시 예외 메시지 세션에서 꺼내기
+        Exception exception = (Exception) request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+        String errorMsg = null;
+        if (exception != null) {
+            if (exception instanceof BadCredentialsException) {
+                errorMsg = "아이디 또는 비밀번호가 잘못되었습니다.";
+            } else if (exception instanceof LockedException) {
+                errorMsg = "계정이 정지(잠김) 상태입니다. 관리자에게 문의하세요.";
+            } else if (exception instanceof DisabledException) {
+                errorMsg = "계정이 비활성화되어 있습니다.";
+            } else {
+                errorMsg = exception.getMessage();
+            }
+        }
+        model.addAttribute("errorMsg", errorMsg);
+
         return "member/login";
     }
 }

@@ -1,0 +1,34 @@
+.search-form {
+    margin-bottom: 18px;
+}
+
+.page-btns {
+    margin-top: 10px;
+}
+
+.field-error {
+    color: crimson;
+    font-size: 0.93em;
+}
+
+.suspended-row .status-cell {
+    color: crimson !important;
+    font-weight: bold;
+}
+
+.suspended-row .suspend-btn {
+    background: #eee;
+    color: #bbb;
+    cursor: not-allowed;
+}
+
+.status-cell.clickable {
+    cursor: pointer;
+    color: crimson;
+    font-weight: bold;
+}
+
+.status-cell:not(.clickable) {
+    cursor: default;
+    color: inherit;
+}

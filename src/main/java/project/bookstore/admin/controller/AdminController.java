@@ -1,5 +1,6 @@
 package project.bookstore.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,22 +9,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.bookstore.board.dto.BoardDetailDto;
 import project.bookstore.board.dto.BoardSearchCondition;
 import project.bookstore.board.entity.Board;
 import project.bookstore.board.service.BoardService;
+import project.bookstore.book.dto.BookForm;
 import project.bookstore.book.dto.BookListDto;
 import project.bookstore.book.dto.BookSearchCondition;
+import project.bookstore.book.entity.Book;
 import project.bookstore.book.service.BookService;
 import project.bookstore.member.dto.MemberListDto;
 import project.bookstore.member.dto.MemberSearchCondition;
+import project.bookstore.member.dto.MemberSuspendHistoryDto;
 import project.bookstore.member.entity.Member;
+import project.bookstore.member.entity.MemberSuspendHistory;
 import project.bookstore.member.security.CustomUserDetails;
 import project.bookstore.member.service.MemberService;
 import project.bookstore.usedbook.dto.UsedBookListDto;
 import project.bookstore.usedbook.dto.UsedBookSearchCondition;
-import project.bookstore.usedbook.entity.UsedBookRequest;
 import project.bookstore.usedbook.service.UsedBookRequestService;
 import project.bookstore.usedbook.service.UsedbookService;
 
@@ -71,8 +76,6 @@ public class AdminController { // 관리자 홈, 회원관리, 게시판관리, 
         }
         try {
             memberService.suspendMember(id, suspendReason);
-            // 별도 MemberSuspendHistory 저장하려면 여기서 호출
-            // memberSuspendHistoryService.saveHistory(id, reason, ...)
             return ResponseEntity.ok().build();
         } catch (Exception e){
             return ResponseEntity.status(500).body("에러: " + e.getMessage());
@@ -92,6 +95,16 @@ public class AdminController { // 관리자 홈, 회원관리, 게시판관리, 
             return ResponseEntity.status(500).body("에러: " + e.getMessage());
         }
     }
+
+    // 계정이력 (비동기, JSON)
+    @GetMapping("members/{id}/history")
+    @ResponseBody
+    public List<MemberSuspendHistoryDto> getMemberHistory(@PathVariable Long id) {
+        List<MemberSuspendHistory> histories = memberService.getSuspendHistories(id);
+        return histories.stream().map(history -> MemberSuspendHistoryDto.from(history)).toList();
+    }
+
+    //-------------------------------------------------------------------------------------------------------------
 
     //게시글관리
     @GetMapping("/boards")
@@ -118,6 +131,8 @@ public class AdminController { // 관리자 홈, 회원관리, 게시판관리, 
         return "redirect:/admin/boards";
     }
 
+    //-------------------------------------------------------------------------------------------------------------
+
     //신책 관리
     @GetMapping("/books")
     public String bookList(@ModelAttribute("condition") BookSearchCondition condition, @PageableDefault(size = 5) Pageable pageable, Model model) {
@@ -130,6 +145,52 @@ public class AdminController { // 관리자 홈, 회원관리, 게시판관리, 
         return "admin/bookList";
     }
 
+
+    /***
+     * 책 목록 수정
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/books/edit/{id}")
+    public String editeForm(@PathVariable Long id, Model model) {
+        Book book = bookService.findById(id);
+        BookForm form = new BookForm();
+
+        form.setTitle(book.getTitle());
+        form.setAuthor(book.getAuthor());
+        form.setPrice(book.getPrice());
+        form.setStockQuantity(book.getStockQuantity());
+        form.setIsUsed(book.getIsUsed());
+        form.setIsbn(book.getIsbn());
+        form.setDescription(book.getDescription());
+
+        model.addAttribute("bookForm", form);
+        model.addAttribute("bookId", id);
+
+        return "admin/bookEditForm";
+    }
+
+    //수정 - 업데이트
+    @PostMapping("/books/edit/{id}")
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("bookForm") BookForm form, BindingResult result) {
+        if (result.hasErrors()) {
+            return "admin/bookEditForm";
+        }
+
+        bookService.upate(id, form);
+        return "redirect:/admin/books";
+    }
+
+    //삭제
+    @GetMapping("/books/delete/{id}")
+    public String booksDelete(@PathVariable Long id){
+        bookService.delete(id);
+        return "redirect:/admin/books";//목록으로 이동
+    }
+
+    //-------------------------------------------------------------------------------------------------------------
+
     //중고책 관리(승인된 건 리스트)
     @GetMapping("/used-books")
     public String usedBookList(@ModelAttribute("condition") UsedBookSearchCondition condition, Model model, Pageable pageable) {
@@ -138,5 +199,13 @@ public class AdminController { // 관리자 홈, 회원관리, 게시판관리, 
         model.addAttribute("page", books);
         model.addAttribute("condition", condition);
         return "admin/usedBookList";
+    }
+
+
+    //삭제
+    @GetMapping("/used/delete/{id}")
+    public String usedBooksDelete(@PathVariable Long id){
+        usedbookService.delete(id);
+        return "redirect:/admin/used-books";//목록으로 이동
     }
 }

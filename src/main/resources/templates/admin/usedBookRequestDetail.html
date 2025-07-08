@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link rel="stylesheet" th:href="@{/css/usedBookRequest-rejectModal.css}">
   <title>판매신청 상세</title>
 </head>
 <body>
@@ -66,15 +67,22 @@
   <a th:href="@{/admin/request}">목록으로</a>
 
   <!-- 거절사유 입력 모달 -->
-  <div id="rejectModal" style="display:none; position:fixed; left:50%; top:40%; transform:translate(-50%,-50%); background:#fff; border:1px solid #ccc; padding:20px; z-index:1000;">
-    <label>거절 사유:</label>
-    <input type="text" id="rejectReasonInput" style="width:250px;">
-    <button id="rejectConfirmBtn">거절하기</button>
-    <button type="button" onclick="closeRejectModal()">닫기</button>
+  <div id="rejectModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-title">거절 사유 입력</div>
+      <div class="modal-body">
+        <label for="rejectReasonInput" style="font-size:1em;">거절사유</label>
+        <input type="text" id="rejectReasonInput" placeholder="거절 사유를 입력하세요" maxlength="100" />
+      </div>
+      <div class="modal-btns">
+        <button id="rejectConfirmBtn" class="btn-main">저장</button>
+        <button type="button" class="btn-main" onclick="closeRejectModal()" style="background:#4b568b;">취소</button>
+      </div>
+    </div>
   </div>
 
   <!-- 배경 흐림/클릭 방지용 (optional) -->
-  <div id="modalBackdrop" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.2); z-index:999;"></div>
+  <div id="modalBackdrop"></div>
 
   <!-- jQuery + 모달/거절 AJAX -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

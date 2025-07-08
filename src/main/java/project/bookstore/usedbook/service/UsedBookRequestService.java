@@ -1,6 +1,8 @@
 package project.bookstore.usedbook.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.global.dto.ResultDto;
@@ -50,9 +52,9 @@ public class UsedBookRequestService {//중고책 판매 신청
     /**
      * 관리자 : 전체 신청 내역
      */
-    public List<UsedBookRequestDto> findAll() {
-        List<UsedBookRequest> usedBookRequests = requestRepository.findAll();
-        return usedBookRequests.stream().map(r -> UsedBookRequestDto.from(r)).collect(Collectors.toList());
+    public Page<UsedBookRequestDto> findAll(Pageable pageable) {
+        Page<UsedBookRequest> usedBookRequests = requestRepository.findAll(pageable);
+        return usedBookRequests.map(r -> UsedBookRequestDto.from(r));
     }
 
     /**

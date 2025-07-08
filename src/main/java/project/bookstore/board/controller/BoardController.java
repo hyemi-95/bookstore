@@ -18,6 +18,8 @@ import project.bookstore.board.service.BoardService;
 import project.bookstore.member.entity.Member;
 import project.bookstore.member.security.CustomUserDetails;
 
+import java.nio.file.AccessDeniedException;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -72,6 +74,7 @@ public class BoardController {
         Member currentUser = (userDetails != null) ? userDetails.getMember() : null;
         BoardDetailDto dto = boardService.getBoardDetail(id, currentUser);
         model.addAttribute("board", dto);
+        model.addAttribute("currentUser", currentUser.getId());
         return "board/boardDetail";
     }
 
@@ -87,14 +90,25 @@ public class BoardController {
 
     // 게시글 수정 처리
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @ModelAttribute BoardUpdateDto dto) {
+    public String update(@PathVariable Long id, @ModelAttribute BoardUpdateDto dto, @AuthenticationPrincipal CustomUserDetails userDetails) throws AccessDeniedException {
+        Long currentUser = (userDetails != null) ? userDetails.getMember().getId() : null;
+        Board board = boardService.getBoard(id);
+        if (!board.getWriter().getId().equals(currentUser)) {
+            throw new AccessDeniedException("본인 게시글만 수정할 수 있습니다.");
+        }
+
         boardService.updateBoard(id, dto);
         return "redirect:/board/{id}";
     }
 
     // 게시글 삭제
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) throws AccessDeniedException {
+        Long currentUser = (userDetails != null) ? userDetails.getMember().getId() : null;
+        Board board = boardService.getBoard(id);
+        if (!board.getWriter().getId().equals(currentUser)) {
+            throw new AccessDeniedException("본인 게시글만 삭제할 수 있습니다.");
+        }
         boardService.deleteBoard(id);
         return "redirect:/board";
     }

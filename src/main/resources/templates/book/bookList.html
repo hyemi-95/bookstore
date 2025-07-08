@@ -42,13 +42,13 @@
                 <td th:text="${book.price}">가격</td>
                 <td th:text="${book.isUsed} ? '중고': '신품'">상태</td>
 
-                <!--수정/삭제는 관리자만 가능-->
-                <td sec:authorize="hasRole('ADMIN')">
-                    <a th:href="@{'/books/edit/' + ${book.id}}">수정</a>
-                    <form th:action="@{'/books/delete/'+ ${book.id}}" method="post" style="display:inline">
-                        <button type="submit">삭제</button>
-                    </form>
-                </td>
+<!--                &lt;!&ndash;수정/삭제는 관리자만 가능&ndash;&gt;-->
+<!--                <td sec:authorize="hasRole('ADMIN')">-->
+<!--                    <a th:href="@{'/books/edit/' + ${book.id}}">수정</a>-->
+<!--                    <form th:action="@{'/books/delete/'+ ${book.id}}" method="post" style="display:inline">-->
+<!--                        <button type="submit">삭제</button>-->
+<!--                    </form>-->
+<!--                </td>-->
             </tr>
         </tbody>
     </table>
