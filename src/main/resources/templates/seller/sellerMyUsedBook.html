@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 승인 중고책 목록</title>
+    <link rel="stylesheet" th:href="@{/css/form-table.css}">
+</head>
+<body>
+<div th:replace="~{fragments/seller-navbar :: navbar}"></div>
+
+<h2>내 승인된 중고책 목록</h2>
+
+<!-- 검색 폼 -->
+<form method="get" th:action="@{/seller/request/myUsedBook}" class="search-form">
+    <input type="text" name="title" th:value="${condition.title}" placeholder="제목">
+    <input type="text" name="author" th:value="${condition.author}" placeholder="저자">
+    <select name="status">
+        <option value="" th:selected="${condition.status == null}">상태 전체</option>
+        <option th:each="s : ${T(project.bookstore.usedbook.entity.UsedStatus).values()}"
+                th:value="${s}"
+                th:text="${s}"
+                th:selected="${condition.status == s}">
+        </option>
+    </select>
+    <button type="submit">검색</button>
+</form>
+
+<table class="form-table">
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>저자</th>
+        <th>가격</th>
+        <th>상태</th>
+        <th>등록일</th>
+        <th>관리</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book, idx : ${usedBooks}">
+        <td th:text="${page.totalElements - (page.number * page.size) - idx.index}"></td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.price}"></td>
+        <td th:text="${book.status}"></td>
+        <td th:text="${#temporals.format(book.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td>
+            <a th:href="@{'/used/' + ${book.id}}">상세</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- 페이징 버튼 -->
+<div th:replace="~{fragments/pagination :: pagination(page=${page})}"></div>
+
+</body>
+</html>

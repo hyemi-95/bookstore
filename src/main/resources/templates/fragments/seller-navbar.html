@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<nav  th:fragment="navbar" style="background:#33418a; color:#fff; padding:15px;">
+    <a th:href="@{/seller}" style="color:#fff; font-weight:bold; margin-right:25px;">판매자홈</a>
+    <a th:href="@{/seller/request/my}" style="color:#fff; margin-right:18px;">판매신청 내역</a>
+    <a th:href="@{/seller/request/new}" style="color:#fff; margin-right:18px;">중고책 판매신청</a>
+    <a th:href="@{/seller/request/myUsedBook}" style="color:#fff; margin-right:18px;">판매중 도서</a>
+    <!-- 필요하다면 정산/통계/설정 등 메뉴 추가 -->
+    <span style="float:right;"><a th:href="@{/main}" style="color:#fff;">메인으로</a></span>
+</nav>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>판매자 홈</title>
+<!--    <link rel="stylesheet" th:href="@{/css/seller.css}">-->
+</head>
+<body>
+<!-- 네비게이션 공통 fragment로 분리! -->
+<div th:replace="~{fragments/seller-navbar :: navbar}"></div>
+
+<div class="seller-home">
+    <h2>판매자 마이페이지</h2>
+    <p>여기는 판매자만 접근 가능한 홈입니다.</p>
+    <!-- 필요에 따라 간단한 현황, 오늘 판매수, 최근 신청 등 보여줄 수 있음 -->
+</div>
+</body>
+</html>

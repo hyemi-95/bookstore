@@ -67,4 +67,9 @@ public class UsedbookService {//중고책 관리 / 조회
     public void delete(Long id) {
         usedBookRepository.deleteById(id);
     }
+
+    public Page<UsedBookListDto> searchMyUsedBook(Member seller ,UsedBookSearchCondition condition, Pageable pageable) {
+        Page<UsedBook> usedBooks = usedBookRepository.searchMyUsedBook(seller, condition, pageable);
+        return usedBooks.map(usedBook -> UsedBookListDto.from(usedBook));
+    }
 }

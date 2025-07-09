@@ -36,7 +36,7 @@ public class UsedBookRequestService {//중고책 판매 신청
      * 판매신청
      */
     @Transactional
-    public Long requestSell(Member seller, String title, String author, Integer price, String isbn, String description) {
+    public Long requestSeller(Member seller, String title, String author, Integer price, String isbn, String description) {
         UsedBookRequest request = new UsedBookRequest(seller, title, author, price, isbn, description, RequestStatus.PENDING);
         requestRepository.save(request);
         return request.getId();
@@ -107,6 +107,11 @@ public class UsedBookRequestService {//중고책 판매 신청
         }
         request.updateInfo(form.getTitle(), form.getAuthor(), form.getPrice(), form.getIsbn(), form.getDescription());
         return new ResultDto(true, null);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        requestRepository.deleteById(id);
     }
 }
 

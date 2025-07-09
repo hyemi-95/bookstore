@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import project.bookstore.member.entity.Member;
 import project.bookstore.usedbook.dto.UsedBookSearchCondition;
 import project.bookstore.usedbook.entity.QUsedBook;
 import project.bookstore.usedbook.entity.UsedBook;
@@ -24,21 +25,44 @@ public class UsedBookRepositoryImpl implements UsedBookRepositoryCustom{
 
         List<UsedBook> result = queryFactory
                 .selectFrom(usedBook)
-                .where(buildSearchCondition(condition))
+                .where(buildSearchCondition(null, condition))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long total = queryFactory
                 .select(usedBook.count())
                 .from(usedBook)
-                .where(buildSearchCondition(condition))
+                .where(buildSearchCondition(null, condition))
                 .fetchOne();
 
         return new PageImpl<>(result,pageable, total != null ? total : 0L); //null예외방지용
     }
 
-    private Predicate buildSearchCondition(UsedBookSearchCondition condition) {
+    @Override
+    public Page<UsedBook> searchMyUsedBook(Member seller, UsedBookSearchCondition condition, Pageable pageable) {
+        List<UsedBook> result = queryFactory
+                .selectFrom(usedBook)
+                .where(buildSearchCondition(seller, condition))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(usedBook.count())
+                .from(usedBook)
+                .where(buildSearchCondition(seller, condition))
+                .fetchOne();
+
+        return new PageImpl<>(result,pageable, total != null ? total : 0L); //null예외방지용
+    }
+
+    private Predicate buildSearchCondition(Member seller ,UsedBookSearchCondition condition) {
         QUsedBook book = usedBook;
         BooleanBuilder builder = new BooleanBuilder();
+        if (seller != null) {
+            builder.and(book.seller.eq(seller));
+        }
 
         if (condition.getTitle() != null && !condition.getTitle().isBlank()) {
             builder.and(book.title.containsIgnoreCase(condition.getTitle()));
