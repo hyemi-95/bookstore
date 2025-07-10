@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 배송 상세</title>
+</head>
+<body>
+<div th:replace="~{fragments/seller-navbar :: navbar}"></div>
+    <!-- seller/deliveryDetail.html -->
+    <h2>내 배송 상세</h2>
+    <table>
+        <tr><th>배송번호</th><td th:text="${delivery.id}"></td></tr>
+        <tr><th>수령자</th><td th:text="${delivery.receiver}"></td></tr>
+        <tr><th>주소</th><td th:text="${delivery.address}"></td></tr>
+        <tr><th>연락처</th><td th:text="${delivery.phone}"></td></tr>
+        <tr><th>상태</th><td th:text="${delivery.status}"></td></tr>
+    </table>
+
+    <!-- 판매자 권한에 맞는 상태만 변경 허용, 필요시 상태변경 버튼 숨김/제한 -->
+    <form th:action="@{|/seller/delivery/${delivery.id}/status-change|}" method="post">
+        <select name="newStatus">
+            <option th:each="status : ${T(project.bookstore.delivery.entity.DeliveryStatus).values()}"
+                    th:value="${status}" th:text="${status}" th:selected="${status == delivery.status}"></option>
+        </select>
+        <button type="submit">상태변경</button>
+    </form>
+
+    <h3>상태 변경 이력</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>일시</th>
+            <th>이전상태</th>
+            <th>변경후상태</th>
+            <th>변경자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="history : ${historyList}">
+            <td th:text="${#temporals.format(history.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${history.beforeStatus}"></td>
+            <td th:text="${history.afterStatus}"></td>
+            <td th:text="${history.changer}"></td>
+        </tr>
+        </tbody>
+    </table>
+<a th:href="@{/seller/delivery}">목록으로</a>
+</body>
+</html>

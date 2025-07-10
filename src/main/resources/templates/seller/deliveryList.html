@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>내 배송 관리</title>
+</head>
+<body>
+<div th:replace="~{fragments/seller-navbar :: navbar}"></div>
+<h2>내 배송 목록</h2>
+<table>
+    <thead>
+    <tr>
+        <th>배송번호</th>
+        <th>수령자</th>
+        <th>주소</th>
+        <th>연락처</th>
+        <th>상태</th>
+        <th>관리</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="delivery : ${deliveries}">
+        <td th:text="${delivery.id}"></td>
+        <td th:text="${delivery.receiver}"></td>
+        <td th:text="${delivery.address}"></td>
+        <td th:text="${delivery.phone}"></td>
+        <td th:text="${delivery.status}"></td>
+        <td>
+            <a th:href="@{|/seller/delivery/${delivery.id}|}">상세</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div th:replace="~{fragments/pagination :: pagination(page=${page})}"></div>
+</body>
+</html>

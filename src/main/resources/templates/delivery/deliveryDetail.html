@@ -64,7 +64,7 @@
         <td th:text="${#temporals.format(history.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
         <td th:text="${history.beforeStatus}"></td>
         <td th:text="${history.afterStatus}"></td>
-        <td th:text="${history.changer.nickname}"></td>
+        <td th:text="${history.changer}"></td>
     </tr>
     <tr th:if="${#lists.isEmpty(historyList)}">
         <td colspan="4" style="text-align:center; color:#aaa;">변경 이력이 없습니다.</td>
