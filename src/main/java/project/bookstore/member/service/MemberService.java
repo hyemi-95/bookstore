@@ -16,6 +16,7 @@ import project.bookstore.member.repository.MemberRepository;
 import project.bookstore.member.repository.MemberSuspendHistoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -89,4 +90,8 @@ public class MemberService {
         return memberSuspendHistoryRepository.findByMemberIdOrderByCreatedDateDesc(memberId);
     }
 
+    public MemberListDto findMyInfo(Member member) {
+        Member memberInfo = memberRepository.findById(member.getId()).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        return MemberListDto.from(memberInfo);
+    }
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 상세</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px;}
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #f7f7f7; }
+        .delivery-block { margin-bottom: 28px; border: 1px solid #e2e2e2; padding: 12px; border-radius: 6px;}
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/mypage-sidebar :: sidebar(nickname=${nickname})}"></div>
+<h2>주문 상세</h2>
+<table>
+    <tr>
+        <th>주문번호</th>
+        <td th:text="${order.orderId}"></td>
+    </tr>
+    <tr>
+        <th>주문일시</th>
+        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    <tr>
+        <th>주문상태</th>
+        <td th:text="${order.status}"></td>
+    </tr>
+    <tr>
+        <th>합계</th>
+        <td th:text="${order.totalPrice} + '원'"></td>
+    </tr>
+</table>
+
+<div th:each="delivery : ${order.deliveries}" class="delivery-block">
+    <h4>
+        배송정보 (
+        <span th:text="${delivery.sellerNickname}"></span>
+        )
+        <span style="margin-left:12px;color:#00a2ff"
+              th:text="'[' + ${delivery.status} + ']'"></span>
+        <a th:href="@{/delivery/{id}(id=${delivery.id})}"
+           style="font-size:13px;margin-left:8px;">배송상세</a>
+    </h4>
+    <table>
+        <tr><th>수령인</th><td th:text="${delivery.receiver}"></td></tr>
+        <tr><th>주소</th><td th:text="${delivery.address}"></td></tr>
+        <tr><th>연락처</th><td th:text="${delivery.phone}"></td></tr>
+    </table>
+    <div>
+        <b>배송상품</b>
+        <ul>
+            <li th:each="item : ${delivery.items}">
+                <span th:text="${item.bookTitle}"></span>
+                (<span th:text="${item.bookType}"></span>)
+                x <span th:text="${item.count}"></span>
+                <span th:text="'각 '+${item.orderPrice} + '원'"></span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<a th:href="@{/orders}">목록으로</a>
+</body>
+</html>

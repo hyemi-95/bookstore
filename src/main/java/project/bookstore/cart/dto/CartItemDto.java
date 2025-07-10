@@ -19,12 +19,15 @@ public class CartItemDto {
 
     private int count;//수량
 
-    public CartItemDto(Long cartItemId, Long bookId, String bookType, String bookTitle, int price, int count) {
+    private boolean usedBookSold;
+
+    public CartItemDto(Long cartItemId, Long bookId, String bookType, String bookTitle, int price, int count, boolean usedBookSold) {
         this.cartItemId = cartItemId;
         this.bookId = bookId;
         this.bookType = bookType;
         this.bookTitle = bookTitle;
         this.price = price;
         this.count = count;
+        this.usedBookSold = usedBookSold;
     }
 }

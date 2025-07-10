@@ -27,9 +27,8 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();//주문 상품들
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Delivery> deliveries = new ArrayList<>();
 
     private LocalDateTime orderDate;//주문시간
 
@@ -42,21 +41,23 @@ public class Order extends BaseEntity {
         item.addOrder(this);
     }
 
-    public void addDelivery(Delivery delivery) {
-        this.delivery = delivery;
-        delivery.addDelivery(this);
-
+    private void addDelivery(Delivery delivery) {
+        this.deliveries.add(delivery);
+        delivery.addOrder(this);
     }
 
     //생성 메서드
-    public static Order createOrder(Member member, List<OrderItem> items, Delivery delivery){
+    public static Order createOrder(Member member, List<OrderItem> items, List<Delivery> deliveries){
         Order order = new Order();
         order.member = member;
 
         for (OrderItem item : items) {
             order.addOrderItem(item);
         }
-        order.addDelivery(delivery); //양방향 연결
+//        order.addDelivery(delivery); //양방향 연결
+        for (Delivery delivery : deliveries) {
+            order.addDelivery(delivery);
+        }
         order.status = OrderStatus.ORDER;
         order.orderDate = LocalDateTime.now();
         return order;

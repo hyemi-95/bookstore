@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup", "/css/**", "/js/**").permitAll() //해당 경로 누구나 접근 가능
+                        .requestMatchers("/login","/login?logout","/signup","main", "/css/**", "/js/**").permitAll() //해당 경로 누구나 접근 가능
                         .requestMatchers("/books/edit/**", "/books/delete/**", "books/new", "/admin/**").hasRole("ADMIN")//책등록, 수정, 삭제는 관리자만 가능하도록
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .anyRequest().authenticated() //위에서 허용한 경로 외의 모든 요청은 로그인 필요

@@ -5,6 +5,21 @@
     <title>메인 페이지</title>
 </head>
 <body>
+<div th:if="${user == null}">
+    <a th:href="@{/login}">로그인</a>
+    <a th:href="@{/signup}">회원가입</a>
+</div>
+<div th:if="${user != null}">
+    <a th:href="@{/login?logout}">로그아웃</a>
+    <a th:href="@{/mypage}">마이페이지</a>
+    <a th:if="${isAdmin}" th:href="@{/admin}">관리자페이지</a>
+    <a th:if="${isSeller}" th:href="@{/seller}">판매자페이지</a>
+</div>
+<div th:if="${user != null}">
     <h1>안녕하세요, <span th:text="${user.nickname}"></span>님!</h1>
+</div>
+<div th:if="${user == null}">
+    <h1>안녕하세요, 게스트님!</h1>
+</div>
 </body>
 </html>

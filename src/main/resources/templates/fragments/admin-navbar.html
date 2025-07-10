@@ -1,10 +1,4 @@
 <!-- templates/fragments/admin-navbar.html -->
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <!-- 필요하면 head 영역에 스타일 추가 가능 -->
-</head>
-<body>
 <nav th:fragment="navbar" style="background:#2a466e; color:#fff; padding:16px 24px; display:flex; align-items:center;">
     <span href="/admin" style="font-weight:bold; font-size:22px; margin-right:40px;">관리자 페이지</span>
     <a href="/admin/members" style="color:#fff; margin-right:20px;">회원관리</a>
@@ -12,10 +6,9 @@
     <a href="/admin/books" style="color:#fff; margin-right:20px;">책관리</a>
     <a href="/admin/used-books" style="color:#fff; margin-right:20px;">중고책 관리</a>
     <a href="/admin/request" style="color:#fff; margin-right:20px;">중고책 판매 신청 관리</a>
+    <a href="/admin/delivery" style="color:#fff; margin-right:20px;">주문/배송관리</a>
     <!-- 필요에 따라 더 추가 -->
     <span style="flex:1"></span>
     <a href="/main" style="color:#fff;">홈으로</a>
     <!-- 로그아웃, 마이페이지 등 추가 가능 -->
 </nav>
-</body>
-</html>

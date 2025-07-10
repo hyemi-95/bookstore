@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지 - 회원 정보</title>
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+</head>
+<body>
+
+<div class="container">
+    <!-- 왼쪽 사이드바 -->
+    <div class="sidebar" th:replace="~{fragments/mypage-sidebar :: sidebar(nickname=${nickname})}"></div>
+
+    <!-- 본문 영역 -->
+    <div class="content">
+        <h2>회원 정보</h2>
+
+        <table>
+            <tr>
+                <th>회원번호</th>
+                <td th:text="${myInfo.id}">1</td>
+            </tr>
+            <tr>
+                <th>이메일</th>
+                <td th:text="${myInfo.email}">example@example.com</td>
+            </tr>
+            <tr>
+                <th>닉네임</th>
+                <td th:text="${myInfo.nickname}">홍길동</td>
+            </tr>
+            <tr>
+                <th>회원권한</th>
+                <td th:text="${myInfo.role}">USER</td>
+            </tr>
+            <tr>
+                <th>계정상태</th>
+                <td th:text="${myInfo.status}">ACTIVE</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

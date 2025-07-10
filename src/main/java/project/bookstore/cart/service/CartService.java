@@ -15,6 +15,7 @@ import project.bookstore.cart.repository.CartRepository;
 import project.bookstore.member.entity.Member;
 import project.bookstore.member.service.MemberService;
 import project.bookstore.usedbook.entity.UsedBook;
+import project.bookstore.usedbook.entity.UsedStatus;
 import project.bookstore.usedbook.service.UsedbookService;
 
 import java.util.List;
@@ -120,12 +121,13 @@ public class CartService {
     private CartItemDto getCartItemDto(CartItem item) { //중복코트 메서드
         if (item.getBook() != null) {
             Book b = item.getBook();
-            return new CartItemDto(item.getId(), b.getId(), "NEW", b.getTitle(), b.getPrice(), item.getCount());
+            return new CartItemDto(item.getId(), b.getId(), "NEW", b.getTitle(), b.getPrice(), item.getCount(),false);
         } else if (item.getUsedBook() != null) {
             UsedBook ub = item.getUsedBook();
-            return new CartItemDto(item.getId(), ub.getId(), "USED", ub.getTitle(), ub.getPrice(), item.getCount());
+            boolean isSold = ub.getStatus() == UsedStatus.SOLD;
+            return new CartItemDto(item.getId(), ub.getId(), "USED", ub.getTitle(), ub.getPrice(), item.getCount(),isSold);
         } else {
-            return new CartItemDto(item.getId(), null, "", "알수없음", 0, item.getCount());
+            return new CartItemDto(item.getId(), null, "", "알수없음", 0, item.getCount(),false);
         }
     }
 

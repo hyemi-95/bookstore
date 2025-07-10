@@ -2,7 +2,6 @@ package project.bookstore.board.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 import project.bookstore.board.entity.Board;
 import project.bookstore.member.entity.Member;
 

@@ -27,7 +27,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom{
                 .join(delivery.order, order)
                 .join(order.orderItems,  orderItem)
                 .join( orderItem.usedBook, usedBook)
-                .where(usedBook.seller.eq(seller))
+                .where(usedBook.seller.eq(seller),orderItem.delivery.eq(delivery))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -38,7 +38,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepositoryCustom{
                 .join(delivery.order, order)
                 .join(order.orderItems,  orderItem)
                 .join( orderItem.usedBook, usedBook)
-                .where(usedBook.seller.eq(seller))
+                .where(usedBook.seller.eq(seller),orderItem.delivery.eq(delivery))
                 .fetchOne();
 
 

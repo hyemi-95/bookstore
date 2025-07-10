@@ -1,12 +1,14 @@
 package project.bookstore.cart.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.bookstore.cart.dto.CartDto;
 import project.bookstore.cart.dto.CartSearchCondition;
 import project.bookstore.cart.service.CartService;
+import project.bookstore.member.security.CustomUserDetails;
 
 import java.security.Principal;
 
@@ -19,9 +21,11 @@ public class CartController {
 
     //장바구니 조회
     @GetMapping
-    public String cartList(@ModelAttribute("condition") CartSearchCondition condition, Model model, Principal principal) {
+    public String cartList(@ModelAttribute("condition") CartSearchCondition condition, Model model, Principal principal, @AuthenticationPrincipal CustomUserDetails userDetails) {
         CartDto cart = cartService.getCartByMember(principal.getName(), condition);
+        String nickname = userDetails.getMember().getNickname();
         model.addAttribute("cart", cart);
+        model.addAttribute("nickname", nickname);
         return "cart/cartList";
     }
 

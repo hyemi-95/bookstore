@@ -5,7 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.bookstore.global.config.BaseEntity;
+import project.bookstore.member.entity.Member;
 import project.bookstore.order.entity.Order;
+import project.bookstore.order.entity.OrderItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,22 +28,41 @@ public class Delivery extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status; // 배송상태 : READY, SHIPPING, COMPLETE
 
-    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
     private Order order;
 
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();//해당 배송에 포함된 주문 상품들
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Member seller;
+
     public Delivery(String receiver, String address, String phone) {
+
         this.receiver = receiver;
         this.address = address;
         this.phone = phone;
         this.status = DeliveryStatus.READY; //생성 시 기본 배송상태 지정
     }
 
-    public void addDelivery(Order order) {
+    //양방향 편의 메서드
+    public void addOrderItem(OrderItem item) {
+        this.orderItems.add(item);
+        item.addDelivery(this);
+    }
+
+    public void addOrder(Order order) {
         this.order = order;
     }
 
     public void changeStatus(DeliveryStatus newStatus) {
         this.status = newStatus;
+    }
+
+    public void changeSeller(Member seller) {
+        this.seller = seller;
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.bookstore.book.entity.Book;
+import project.bookstore.delivery.entity.Delivery;
 import project.bookstore.global.config.BaseEntity;
 import project.bookstore.usedbook.entity.UsedBook;
 
@@ -19,6 +20,10 @@ public class OrderItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order; //어떤 주문에 포함됬는지
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery; //어떤 주문에 포함됬는지
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
@@ -58,8 +63,13 @@ public class OrderItem extends BaseEntity {
     public static OrderItem createOrderItem(UsedBook usedBook, int orderPrice, int count) {
         return createOrderItem(null, usedBook, orderPrice, count);
     }
+
     public void addOrder(Order order) {
         this.order = order;
+    }
+
+    public void addDelivery(Delivery delivery) {
+        this.delivery = delivery;
     }
 
     //가격 계산 메서드

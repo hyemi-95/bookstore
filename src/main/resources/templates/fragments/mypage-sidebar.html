@@ -1,0 +1,8 @@
+<nav  th:fragment="sidebar (nickname)" style="background:#33418a; color:#fff; padding:15px;">
+  <a th:href="@{/mypage/Myinfo}" style="color:#fff; font-weight:bold; margin-right:25px;">회원정보</a>
+  <a th:href="@{/cart}" style="color:#fff; margin-right:18px;">장바구니 목록</a>
+  <a th:href="@{/orders}" style="color:#fff; margin-right:18px;">주문 내역</a>
+  <a th:href="@{/board(keyword='', writerNickName=${nickname})}" style="color:#fff; margin-right:18px;">작성 게시글</a>
+
+  <span style="float:right;"><a th:href="@{/main}" style="color:#fff;">메인으로</a></span>
+</nav>

@@ -18,9 +18,18 @@ public class MainController {
      */
     @GetMapping("/main")
     public String main(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        LoginUserDto loginUserDto =null;
+        boolean isAdmin =false;
+        boolean isSeller =false;
 
-        LoginUserDto loginUserDto = new LoginUserDto(userDetails.getMember());
+        if(userDetails != null) {
+            loginUserDto = new LoginUserDto(userDetails.getMember());
+            isAdmin = userDetails.getMember().isAdmin();
+            isSeller = userDetails.getMember().isSeller();
+        }
         model.addAttribute("user", loginUserDto);
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("isSeller", isSeller);
         return "main/main";
     }
 }

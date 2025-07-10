@@ -17,6 +17,7 @@ import project.bookstore.member.entity.Member;
 import project.bookstore.member.repository.MemberRepository;
 
 import org.springframework.security.access.AccessDeniedException;
+import project.bookstore.seller.dto.SellerDeliveryDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,41 +74,43 @@ public class DeliveryService {
     }
     //관리자용 start
     public Page<AdminDeliveryListDto> findAllForAdmin(Pageable pageable) {
-        return deliveryRepository.findAll(pageable)
+        return deliveryRepository.findBySellerIsNull(pageable)
                 .map(AdminDeliveryListDto::from);
     }
 
     public Delivery findDetailForAdmin(Long id) {
-        return findById(id);
+        Delivery delivery = findById(id);
+        if (delivery.getSeller() != null) throw new AccessDeniedException("신책 배송만 조회 가능합니다.");
+        return delivery;
     }
     //관리자용 end
 
-//    //판매자용 start
-//    //내가 판매한 상품의 배송 목록(페이징)
-//    public Page<DeliveryDto> findBySeller(Member seller, Pageable pageable) {
-//        Page<Delivery> deliveries = deliveryRepository.findAllBySeller(seller, pageable);
-//        return deliveries.map(DeliveryDto::from);
-//    }
-//
-//    //내 상품의 배송 상세만 조회(권한체크포함)
-//    public DeliveryDto findDtoByIdForSeller(Long id, Member seller) {
-//        Delivery delivery = findById(id);
-//
-//        //usedBook의 판매자가 seller가 맞는지확인
-//        boolean isMyDelivery = delivery.getOrder()
-//                .getOrderItems().stream()
-//                .anyMatch(item -> item.getUsedBook() != null && item.getUsedBook().getSeller().getId().equals(seller.getId()));
-//
-//        if (!isMyDelivery) {
-//            throw new IllegalArgumentException("본인 판매책이 아닙니다.");
-//        }
-//        return DeliveryDto.from(delivery);
-//    }
-//
-//    //상태변경이력
-//    public List<DeliveryStatusHistoryDto> getDeliveryHistoryDtos(Long id) {
-//        List<DeliveryStatusHistory> histories = historyRepository.findByDeliveryId(id);
-//        return histories.stream().map(DeliveryStatusHistoryDto::form).collect(Collectors.toList());
-//    }
-//    //판매자용 end
+    //판매자용 start
+    //내가 판매한 상품의 배송 목록(페이징)
+    public Page<SellerDeliveryDto> findBySeller(Member seller, Pageable pageable) {
+        Page<Delivery> deliveries = deliveryRepository.findAllBySeller(seller, pageable);
+        return deliveries.map(SellerDeliveryDto::from);
+    }
+
+    //내 상품의 배송 상세만 조회(권한체크포함)
+    public SellerDeliveryDto findDtoByIdForSeller(Long id, Member seller) {
+        Delivery delivery = findById(id);
+
+        //usedBook의 판매자가 seller가 맞는지확인
+        boolean isMyDelivery = delivery.getOrder()
+                .getOrderItems().stream()
+                .anyMatch(item -> item.getUsedBook() != null && item.getUsedBook().getSeller().getId().equals(seller.getId()));
+
+        if (!isMyDelivery) {
+            throw new IllegalArgumentException("본인 판매책이 아닙니다.");
+        }
+        return SellerDeliveryDto.from(delivery);
+    }
+
+    //상태변경이력
+    public List<DeliveryStatusHistoryDto> getDeliveryHistoryDtos(Long id) {
+        List<DeliveryStatusHistory> histories = historyRepository.findByDeliveryId(id);
+        return histories.stream().map(DeliveryStatusHistoryDto::form).collect(Collectors.toList());
+    }
+    //판매자용 end
 }

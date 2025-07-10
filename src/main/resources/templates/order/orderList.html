@@ -2,79 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>내 주문 목록</title>
+    <title>주문 목록</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px;}
+        th, td { border: 1px solid #ccc; padding: 10px; }
+        th { background: #f7f7f7; }
+        .cancelled { color: #aaa; }
+    </style>
 </head>
 <body>
-    <h1>내 주문 목록</h1>
-    <form th:action="@{/orders}" method="get" style="margin-bottom:20px;">
-        <label>시작일: <input type="date" name="startDate" th:value="${condition.startDate}"></label>
-        <label>종료일: <input type="date" name="endDate" th:value="${condition.endDate}"></label>
-        <label>책 제목: <input type="text" name="title" placeholder="책 제목" th:value="${condition.title}"></label>
-        <label>주문상태:
-            <select name="status">
-                <option th:value="''" th:text="전체" th:selected="${condition.status ==null}">전체</option>
-                <option th:value="ORDER" th:text="주문" th:selected="${condition.status?.name() == 'ORDER'}">주문</option>
-                <option th:value="CANCEL" th:text="취소" th:selected="${condition.status?.name() == 'CANCEL'}">취소</option>
-            </select>
-        </label>
-        <button type="submit">검색</button>
-        <a th:href="@{/orders}">초기화</a>
-    </form>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>주문번호</th>
-            <th>주문상태</th>
-            <th>배송상태</th>
-            <th>수령인</th>
-            <th>주소</th>
-            <th>연락처</th>
-            <th>주문일시</th>
-            <th>상품목록</th>
-            <th>주문 취소</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr th:each="order : ${orders}">
-                <td><a th:href="@{/delivery/{id}(id=${order.deliveryId})}" th:text="${order.orderId}"></a></td>
-                <td th:text="${order.status}"></td>
-                <td th:text="${order.deliveryStatus}"></td>
-                <td th:text="${order.receiver}"></td>
-                <td th:text="${order.address}"></td>
-                <td th:text="${order.phone}"></td>
-                <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                    <table border="1">
-                        <tr>
-                            <th>책 제목</th>
-                            <th>단가</th>
-                            <th>수량</th>
-                            <th>금액</th>
-                        </tr>
-                        <tr th:each="item : ${order.items}">
-                            <td th:text="${item.bookTitle}"></td>
-                            <td th:text="${#numbers.formatInteger(item.orderPrice, 0 , 'COMMA')}"></td>
-                            <td th:text="${item.count}"></td>
-                            <td th:text="${#numbers.formatInteger(item.totalPrice, 0 , 'COMMA')}"></td>
-                        </tr>
-                        <tr>
-                            <td th:colspan="3" style="text-align: center"><b>주문 합계</b></td>
-                            <td th:text="${#numbers.formatInteger(order.totalPrice, 0 , 'COMMA')}" style="font-weight: bold"></td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <form  th:if="${order.status.name() == 'ORDER' and order.deliveryStatus.name() == 'READY'}" th:action="@{/orders/{orderId}/cancel(orderId=${order.orderId})}" method="post">
-                        <button type="submit">주문 취소</button>
-                    </form>
-                    <span th:if="${order.status.name() == 'CANCEL' and  order.deliveryStatus.name() == 'CANCEL'}" style="color: #aaa">취소 완료</span>
-                    <span th:if="${order.status.name() == 'ORDER' and (order.deliveryStatus.name() == 'COMPLETE' or order.deliveryStatus.name() == 'SHIPPING')}" style="color: #aaa">취소 불가</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div>
-        <a th:href="@{/books}">책 목록으로 돌아가기</a>
-    </div>
+<div th:replace="~{fragments/mypage-sidebar :: sidebar(nickname=${nickname})}"></div>
+<h2>나의 주문 목록</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>주문번호</th>
+        <th>주문일시</th>
+        <th>주문상태</th>
+        <th>배송정보</th>
+        <th>주문상품</th>
+        <th>합계</th>
+        <th>취소</th>
+        <th>상세</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderId}"></td>
+        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${order.status}"></td>
+        <td>
+            <ul>
+                <li th:each="delivery : ${order.deliveries}">
+                    <span th:text="|[${delivery.sellerNickname != null ? delivery.sellerNickname : '본사배송'}]|"></span>
+                    <span th:text="${delivery.status}"></span>
+                </li>
+            </ul>
+        </td>
+        <td>
+            <ul>
+                <li th:each="delivery : ${order.deliveries}">
+                    <b th:text="|[${delivery.sellerNickname != null ? delivery.sellerNickname : '본사배송'}]|"></b>
+                    <ul style="margin:0 0 8px 0;padding-left:18px;">
+                        <li th:each="item : ${delivery.items}">
+                            <span th:text="${item.bookTitle}"></span>
+                            (<span th:text="${item.bookType}"></span>)
+                            x <span th:text="${item.count}"></span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </td>
+        <td th:text="|${order.totalPrice}원|"></td>
+        <td>
+            <form th:if="${order.cancellable}" th:action="@{/orders/{orderId}/cancel(orderId=${order.orderId})}" method="post">
+                <button type="submit">주문 취소</button>
+            </form>
+            <span th:if="${order.status.name() == 'CANCEL'}" class="cancelled">취소 완료</span>
+            <span th:if="${order.status.name() == 'ORDER' and !order.cancellable}" class="cancelled">취소 불가</span>
+        </td>
+        <td>
+            <a th:href="@{/orders/{orderId}(orderId=${order.orderId})}">상세</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- 페이징 등은 필요시 추가 가능 -->
 </body>
 </html>

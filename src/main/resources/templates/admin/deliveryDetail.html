@@ -4,72 +4,72 @@
   <title>배송 상세</title>
 </head>
 <body>
-<div th:replace="~{fragments/admin-navbar :: navbar}"></div>
-<h2>배송 상세</h2>
-<table>
-  <tr><th>배송번호</th><td th:text="${deliveryDetail.deliveryId}"></td></tr>
-  <tr><th>주문번호</th><td th:text="${deliveryDetail.orderId}"></td></tr>
-  <tr><th>주문자</th><td th:text="${deliveryDetail.ordererName}"></td></tr>
-  <tr><th>주문일</th><td th:text="${deliveryDetail.orderDate}"></td></tr>
-  <tr><th>수령자</th><td th:text="${deliveryDetail.receiver}"></td></tr>
-  <tr><th>주소</th><td th:text="${deliveryDetail.address}"></td></tr>
-  <tr><th>연락처</th><td th:text="${deliveryDetail.phone}"></td></tr>
-  <tr><th>상태</th><td th:text="${deliveryDetail.status}"></td></tr>
-</table>
+  <div th:replace="~{fragments/admin-navbar :: navbar}"></div>
+  <h2>배송 상세</h2>
+  <table>
+    <tr><th>배송번호</th><td th:text="${deliveryDetail.deliveryId}"></td></tr>
+    <tr><th>주문번호</th><td th:text="${deliveryDetail.orderId}"></td></tr>
+    <tr><th>주문자</th><td th:text="${deliveryDetail.ordererName}"></td></tr>
+    <tr><th>주문일</th><td th:text="${deliveryDetail.orderDate}"></td></tr>
+    <tr><th>수령자</th><td th:text="${deliveryDetail.receiver}"></td></tr>
+    <tr><th>주소</th><td th:text="${deliveryDetail.address}"></td></tr>
+    <tr><th>연락처</th><td th:text="${deliveryDetail.phone}"></td></tr>
+    <tr><th>상태</th><td th:text="${deliveryDetail.status}"></td></tr>
+  </table>
 
-<h3>주문 상품 내역</h3>
-<table>
-  <thead>
-  <tr>
-    <th>상품명</th>
-    <th>저자</th>
-    <th>종류</th>
-    <th>판매자</th>
-    <th>가격</th>
-    <th>수량</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="item : ${deliveryDetail.orderItems}">
-    <td th:text="${item.title}"></td>
-    <td th:text="${item.author}"></td>
-    <td th:text="${item.type}"></td>
-    <td th:text="${item.sellerName}"></td>
-    <td th:text="${item.price}"></td>
-    <td th:text="${item.quantity}"></td>
-  </tr>
-  </tbody>
-</table>
+  <h3>주문 상품 내역</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>상품명</th>
+      <th>저자</th>
+      <th>종류</th>
+      <th>판매자</th>
+      <th>가격</th>
+      <th>수량</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${deliveryDetail.orderItems}">
+      <td th:text="${item.title}"></td>
+      <td th:text="${item.author}"></td>
+      <td th:text="${item.type}"></td>
+      <td th:text="${item.sellerName}"></td>
+      <td th:text="${item.price}"></td>
+      <td th:text="${item.quantity}"></td>
+    </tr>
+    </tbody>
+  </table>
 
-<h3>배송상태 변경</h3>
-<form th:action="@{|/admin/delivery/${deliveryDetail.deliveryId}/status-change|}" method="post">
-  <select name="newStatus">
-    <option th:each="status : ${T(project.bookstore.delivery.entity.DeliveryStatus).values()}"
-            th:value="${status}" th:text="${status}" th:selected="${status.name() == deliveryDetail.status}"></option>
-  </select>
-  <button type="submit">상태변경</button>
-</form>
+  <h3>배송상태 변경</h3>
+  <form th:action="@{|/admin/delivery/${deliveryDetail.deliveryId}/status-change|}" method="post">
+    <select name="newStatus">
+      <option th:each="status : ${T(project.bookstore.delivery.entity.DeliveryStatus).values()}"
+              th:value="${status}" th:text="${status}" th:selected="${status.name() == deliveryDetail.status}"></option>
+    </select>
+    <button type="submit">상태변경</button>
+  </form>
 
-<h3>상태 변경 이력</h3>
-<table>
-  <thead>
-  <tr>
-    <th>일시</th>
-    <th>이전상태</th>
-    <th>변경후상태</th>
-    <th>변경자</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="history : ${historyList}">
-    <td th:text="${#temporals.format(history.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
-    <td th:text="${history.beforeStatus}"></td>
-    <td th:text="${history.afterStatus}"></td>
-    <td th:text="${history.changer}"></td>
-  </tr>
-  </tbody>
-</table>
+  <h3>상태 변경 이력</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>일시</th>
+      <th>이전상태</th>
+      <th>변경후상태</th>
+      <th>변경자</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="history : ${historyList}">
+      <td th:text="${#temporals.format(history.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+      <td th:text="${history.beforeStatus}"></td>
+      <td th:text="${history.afterStatus}"></td>
+      <td th:text="${history.changer}"></td>
+    </tr>
+    </tbody>
+  </table>
 
-<a th:href="@{/admin/delivery}">목록으로</a>
+  <a th:href="@{/admin/delivery}">목록으로</a>
 </body>
 </html>

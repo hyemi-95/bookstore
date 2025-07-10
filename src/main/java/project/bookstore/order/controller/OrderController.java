@@ -44,7 +44,8 @@ public class OrderController {
     @PostMapping("/form-cart")
     public String orderFromCart(@RequestParam(value = "cartItemIds", required = false) List<Long> cartItemIds,
                                 @RequestParam(value = "counts", required = false) List<Integer> counts,
-                                Principal principal, Model model) {
+                                Principal principal, Model model,
+                                @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         //체크된 상품이 없으면 에러 메시지와 함께 장바구니로 이동(이중방어)
         if (cartItemIds == null || cartItemIds.isEmpty()) {
@@ -55,6 +56,8 @@ public class OrderController {
         }
 
         List<CartItemDto> selectedItem = cartService.findCartItemsByIds(cartItemIds);
+        String nickname = userDetails.getMember().getNickname();
+        model.addAttribute("nickname", nickname);
 
         model.addAttribute("orderItems", selectedItem);
         model.addAttribute("counts", counts);
@@ -92,13 +95,35 @@ public class OrderController {
      * @return
      */
     @GetMapping
-    public String orderList(Model model, Principal principal, @ModelAttribute("condition") OrderSearchCondition condition) {
+    public String orderList(Model model, Principal principal, @ModelAttribute("condition") OrderSearchCondition condition, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = memberService.findByEmail(principal.getName());
         List<OrderDto> orders = orderService.findOrdersByMember(member.getId(), condition);
+        String nickname = userDetails.getMember().getNickname();
+        model.addAttribute("nickname", nickname);
         model.addAttribute("orders", orders);
 
         return "order/orderList";
     }
+
+    /**
+     * 주문 상세
+     * @param orderId
+     * @param userDetails
+     * @param model
+     * @return
+     */
+    @GetMapping("/{orderId}")
+    public String orderDetail(@PathVariable Long orderId, @AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Member member = userDetails.getMember();
+        // 주문주인 확인(권한처리), 일반회원은 본인 주문만, 관리자는 전체 조회 가능(선택)
+        OrderDto order = orderService.findOrderDetailById(orderId, member);
+        String nickname = member.getNickname();
+        model.addAttribute("nickname", nickname);
+        model.addAttribute("order", order);
+        return "order/orderDetail";
+    }
+
+
 
     @PostMapping("/{orderId}/cancel")
     public String cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal CustomUserDetails userDetails) {

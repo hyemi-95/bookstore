@@ -28,6 +28,7 @@ public class AdminDeliveryDetailDto {
     public static AdminDeliveryDetailDto from(Delivery delivery) {
         AdminDeliveryDetailDto dto = new AdminDeliveryDetailDto();
         Order order = delivery.getOrder();
+
         dto.deliveryId = delivery.getId();
         dto.receiver = delivery.getReceiver();
         dto.address = delivery.getAddress();
@@ -39,6 +40,7 @@ public class AdminDeliveryDetailDto {
             dto.orderDate = order.getOrderDate() != null ?
                     order.getOrderDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "";
             dto.orderItems = order.getOrderItems().stream()
+                    .filter(item -> item.getDelivery().getId().equals(delivery.getId()))
                     .map(OrderItemForDeliveryDto::from)
                     .collect(Collectors.toList());
         }
